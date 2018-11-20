@@ -1,7 +1,9 @@
 cmake_minimum_required(VERSION 3.0)
 
 project(mlgraphs-bandits-network)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
 find_package(Boost COMPONENTS graph)
 
@@ -22,7 +24,7 @@ set(UTILS_FILES
         util/GraphViz.h)
 
 
-set(SOURCE_FILES ${BANDIT_FILES} ${NETWORK_FILES} ${POLICY_FILES} ${UTILS_FILES})
+set(SOURCE_FILES ${BANDIT_FILES} ${NETWORK_FILES} ${POLICY_FILES} ${UTILS_FILES} policy/FollowYourLeaderNetworkPolicy.h policy/FollowYourLeaderNetworkPolicy.cpp)
 
 add_executable(mlgraphs-bandits-network main.cpp ${SOURCE_FILES})
 target_link_libraries(mlgraphs-bandits-network pthread)

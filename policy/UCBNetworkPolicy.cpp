@@ -19,7 +19,7 @@ double valueForArmAndUser(unsigned long i, unsigned long u, const Network *netwo
     return S / m + std::sqrt(2 * std::log(t) / m);
 }
 
-unsigned long argmaxUCB(unsigned long u, const Network *network, unsigned long t, matrix<unsigned long> T, matrix<double>X) {
+unsigned long UCBNetworkPolicy::argmaxUCB(unsigned long u, const Network *network, unsigned long t, matrix<unsigned long> T, matrix<double>X) {
     double valueMax = valueForArmAndUser(0, u, network, t, T, X);
     std::vector<unsigned long> indicesMax = {0};
 
@@ -67,7 +67,7 @@ bool UCBNetworkPolicy::run(std::default_random_engine &generator, int N) {
 
         auto vs = boost::vertices(*network);
         for(auto  it = vs.first; it != vs.second; it++) {
-            unsigned long selectedArmIdx = argmaxUCB(*it, network, t, T, X);
+            unsigned long selectedArmIdx = UCBNetworkPolicy::argmaxUCB(*it, network, t, T, X);
 
             double reward = bandit->getArms()[selectedArmIdx]->sample(generator);
 
@@ -81,6 +81,7 @@ bool UCBNetworkPolicy::run(std::default_random_engine &generator, int N) {
 
     std::cout << T << std::endl;
     std::cout << X << std::endl;
+    std::cout << "Total reward " << IPolicy::total_reward(X);
 
     return true;
 }
