@@ -1,5 +1,6 @@
 #pragma once
 
+#include <vector>
 #include "Statistics.h"
 
 double mean(std::vector<double> vec);
