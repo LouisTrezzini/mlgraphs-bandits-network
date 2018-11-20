@@ -52,9 +52,6 @@ bool UCBNetworkPolicy::run(std::default_random_engine &generator, int N) {
     matrix<unsigned long> T = zero_matrix(network->vertex_set().size(), K);
     matrix<double> X = zero_matrix(network->vertex_set().size(), K);
 
-    std::cout << T << std::endl;
-    std::cout << X << std::endl;
-
     for (unsigned long t = 0; t < K; t++) {
         auto vs = boost::vertices(*network);
         for(auto  it = vs.first; it != vs.second; it++) {

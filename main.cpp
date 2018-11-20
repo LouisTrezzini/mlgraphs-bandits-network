@@ -25,7 +25,7 @@ int main(int argc, char *argv[]) {
 
             std::vector<IArm*> arms = {
                     new ArmBernoulli(0.5),
-                    new ArmBernoulli(0.9),
+                    new ArmBernoulli(0.7),
             };
             const Bandit MAB(arms);
             const BanditNetwork banditNetwork(&MAB, &g);
