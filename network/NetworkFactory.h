@@ -50,6 +50,40 @@ public:
 
         return g;
     }
+
+    static Network createFullyDisconnectedGraph(unsigned long N) {
+        std::vector<Edge> edges;
+
+        Network g(N, edges);
+
+        return g;
+    }
+
+    static Network createCircularGraph(unsigned long N) {
+        std::vector<Edge> edges;
+
+        for (unsigned long i = 1; i < N; i++) {
+            edges.emplace_back(i - 1, i);
+        }
+
+        edges.emplace_back(N - 1, 0);
+
+        Network g(N, edges);
+
+        return g;
+    }
+
+    static Network createStarGraph(unsigned long N) {
+        std::vector<Edge> edges;
+
+        for (unsigned long i = 1; i < N; i++) {
+            edges.emplace_back(0, i);
+        }
+
+        Network g(N, edges);
+
+        return g;
+    }
 };
 
 
