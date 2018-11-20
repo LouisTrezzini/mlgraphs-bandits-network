@@ -7,7 +7,7 @@
 
 using namespace boost;
 
-typedef adjacency_list<vecS, vecS, directedS> Graph;
+typedef adjacency_list<vecS, vecS, undirectedS> Graph;
 
 class Network : public Graph {
 

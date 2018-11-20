@@ -49,8 +49,11 @@ bool UCBNetworkPolicy::run(std::default_random_engine &generator, int N) {
     auto K = bandit->getK();
 
     // FIXME This assumes all vertices are [|0, N - 1|]
-    matrix<unsigned long> T(network->vertex_set().size(), K);
-    matrix<double> X(network->vertex_set().size(), K);
+    matrix<unsigned long> T = zero_matrix(network->vertex_set().size(), K);
+    matrix<double> X = zero_matrix(network->vertex_set().size(), K);
+
+    std::cout << T << std::endl;
+    std::cout << X << std::endl;
 
     for (unsigned long t = 0; t < K; t++) {
         auto vs = boost::vertices(*network);

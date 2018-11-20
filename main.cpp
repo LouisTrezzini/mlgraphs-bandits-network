@@ -7,6 +7,7 @@
 #include "bandit/BanditNetwork.h"
 #include "bandit/ArmBernoulli.h"
 #include "policy/UCBNetworkPolicy.h"
+#include "util/GraphViz.h"
 
 
 int main(int argc, char *argv[]) {
@@ -16,7 +17,9 @@ int main(int argc, char *argv[]) {
     switch (mode) {
 
         case 0: {
-            Network g = NetworkFactory::createFilesGraph();
+            Network g = NetworkFactory::createFullyConnectedGraph(5);
+
+            GraphViz::write(g, "network.graphviz");
 
             std::cout << g.vertex_set() << std::endl;
 

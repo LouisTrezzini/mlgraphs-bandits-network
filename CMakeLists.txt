@@ -19,7 +19,7 @@ set(POLICY_FILES
 set(UTILS_FILES
         util/Statistics.cpp
         util/Statistics.h
-        )
+        util/GraphViz.h)
 
 
 set(SOURCE_FILES ${BANDIT_FILES} ${NETWORK_FILES} ${POLICY_FILES} ${UTILS_FILES})

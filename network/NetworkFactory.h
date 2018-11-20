@@ -15,7 +15,7 @@ public:
             N
         };
 
-        std::vector<Edge> used_by = {
+        std::vector<Edge> edges = {
                 Edge(dax_h, foo_cpp), Edge(dax_h, bar_cpp), Edge(dax_h, yow_h),
                 Edge(yow_h, bar_cpp), Edge(yow_h, zag_cpp),
                 Edge(boz_h, bar_cpp), Edge(boz_h, zig_cpp), Edge(boz_h, zag_cpp),
@@ -32,7 +32,21 @@ public:
                 Edge(libzigzag_a, killerapp)
         };
 
-        Network g(N, used_by);
+        Network g(N, edges);
+
+        return g;
+    }
+
+    static Network createFullyConnectedGraph(unsigned long N) {
+        std::vector<Edge> edges;
+
+        for (unsigned long i = 0; i < N; i++) {
+            for (unsigned long j = 0; j < i; j++) {
+                edges.emplace_back(i, j);
+            }
+        }
+
+        Network g(N, edges);
 
         return g;
     }
