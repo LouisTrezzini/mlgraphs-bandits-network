@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cstdlib>
+#include "network/NetworkFactory.h"
 #include "network/Network.h"
 #include "network/Edge.h"
 #include "bandit/Bandit.h"
@@ -15,35 +16,9 @@ int main(int argc, char *argv[]) {
     switch (mode) {
 
         case 0: {
-            enum files_e {
-                dax_h,
-                yow_h, boz_h, zow_h, foo_cpp,
-                foo_o, bar_cpp, bar_o, libfoobar_a,
-                zig_cpp, zig_o, zag_cpp, zag_o,
-                libzigzag_a, killerapp,
-                N
-            };
+            Network g = NetworkFactory::createFilesGraph();
 
-            std::vector<Edge> used_by = {
-                    Edge(dax_h, foo_cpp), Edge(dax_h, bar_cpp), Edge(dax_h, yow_h),
-                    Edge(yow_h, bar_cpp), Edge(yow_h, zag_cpp),
-                    Edge(boz_h, bar_cpp), Edge(boz_h, zig_cpp), Edge(boz_h, zag_cpp),
-                    Edge(zow_h, foo_cpp),
-                    Edge(foo_cpp, foo_o),
-                    Edge(foo_o, libfoobar_a),
-                    Edge(bar_cpp, bar_o),
-                    Edge(bar_o, libfoobar_a),
-                    Edge(libfoobar_a, libzigzag_a),
-                    Edge(zig_cpp, zig_o),
-                    Edge(zig_o, libzigzag_a),
-                    Edge(zag_cpp, zag_o),
-                    Edge(zag_o, libzigzag_a),
-                    Edge(libzigzag_a, killerapp)
-            };
-
-            Network g(N, used_by);
-
-            std::cout << N << " " << g.vertex_set() << std::endl;
+            std::cout << g.vertex_set() << std::endl;
 
             std::vector<IArm*> arms = {
                     new ArmBernoulli(0.5),

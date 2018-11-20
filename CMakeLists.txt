@@ -11,7 +11,7 @@ set(BANDIT_FILES
         bandit/Bandit.h bandit/Bandit.h bandit/IArm.h bandit/BanditNetwork.h bandit/ArmBernoulli.h)
 
 set(NETWORK_FILES
-        network/Network.h network/Edge.h)
+        network/Network.h network/Edge.h network/NetworkFactory.h)
 
 set(POLICY_FILES
         policy/IPolicy.h
