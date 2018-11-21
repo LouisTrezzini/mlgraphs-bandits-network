@@ -44,7 +44,12 @@ PolicyResult FollowYourLeaderNetworkPolicy::run(
             unsigned long selectedArmIdx;
 
             if (leaders.find(userIdx) != leaders.end()) {
-                selectedArmIdx = UCBNetworkPolicy::argmaxUCB(userIdx, network, t, T, X);
+                if (t < K) {
+                    selectedArmIdx = t;
+                }
+                else {
+                    selectedArmIdx = UCBNetworkPolicy::argmaxUCB(userIdx, network, t, T, X);
+                }
             }
             else {
                 if (t == 0) {
