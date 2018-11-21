@@ -30,6 +30,7 @@ bool FollowYourLeaderNetworkPolicy::run(std::default_random_engine &generator, i
     matrix<unsigned long> T = zero_matrix(network->vertex_set().size(), K);
     matrix<double> X = zero_matrix(network->vertex_set().size(), K);
     std::vector<int> previous_actions(network->vertex_set().size());
+    std::vector<int> new_actions(network->vertex_set().size());
 
     for (unsigned long t = 0; t < K; t++) {
         auto vs = boost::vertices(*network);
@@ -49,14 +50,16 @@ bool FollowYourLeaderNetworkPolicy::run(std::default_random_engine &generator, i
         auto vs = boost::vertices(*network);
         for(auto  it = vs.first; it != vs.second; it++) {
             unsigned long selectedArmIdx;
-            if (std::find(leaders.begin(), leaders.end(), *it) != leaders.end()) {
+            auto search = leaders.find(*it);
+            if (search != leaders.end()) {
                 selectedArmIdx = UCBNetworkPolicy::argmaxUCB(*it, network, t, T, X);
             }
             else {
                 auto neighbours = boost::adjacent_vertices(*it, *network);
                 bool found = false;
                 for (auto vd : make_iterator_range(neighbours)) {
-                    if (std::find(leaders.begin(), leaders.end(), vd) != leaders.end()) {
+                    auto search = leaders.find(vd);
+                    if (search != leaders.end()) {
                         selectedArmIdx = previous_actions[vd];
                         found = true;
                         break;
@@ -71,9 +74,10 @@ bool FollowYourLeaderNetworkPolicy::run(std::default_random_engine &generator, i
 
             T_next(*it, selectedArmIdx) += 1;
             X_next(*it, selectedArmIdx) += reward;
-            previous_actions[*it] = selectedArmIdx;
+            new_actions[*it] = selectedArmIdx;
         }
 
+        previous_actions = new_actions;
         T = T_next;
         X = X_next;
     }

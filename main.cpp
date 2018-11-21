@@ -53,7 +53,7 @@ int main(int argc, char *argv[]) {
             const Bandit MAB(arms);
             const BanditNetwork banditNetwork(&MAB, &g);
 
-            const std::vector<int> leaders = {0};
+            const std::unordered_set<int> leaders = {0};
             FollowYourLeaderNetworkPolicy policy(&banditNetwork, leaders);
 
             std::default_random_engine generator;
