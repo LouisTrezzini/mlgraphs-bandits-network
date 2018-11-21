@@ -18,6 +18,14 @@ public:
             : Graph(edges.cbegin(), edges.cend(), N) {
     }
 
+    auto getVertices() const {
+        return make_iterator_range(boost::vertices(*this));
+    }
+
+    auto getNeighbors(unsigned long node) const {
+        return make_iterator_range(boost::adjacent_vertices(node, *this));
+    }
+
 };
 
 #endif //MLGRAPHS_BANDITS_NETWORK_NETWORK_H
