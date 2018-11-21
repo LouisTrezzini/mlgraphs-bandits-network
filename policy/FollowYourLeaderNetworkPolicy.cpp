@@ -34,28 +34,28 @@ bool FollowYourLeaderNetworkPolicy::run(std::default_random_engine &generator, i
 
     for (unsigned long t = 0; t < K; t++) {
         auto vs = boost::vertices(*network);
-        for(auto  it = vs.first; it != vs.second; it++) {
+        for (auto it : make_iterator_range(vs)) {
             double reward = bandit->getArms()[t]->sample(generator);
-            T(*it, t) += 1;
-            X(*it, t) += reward;
-            previous_actions[*it] = t;
+            T(it, t) += 1;
+            X(it, t) += reward;
+            previous_actions[it] = t;
         }
     }
 
-    // FIXME We often loop on leaders which we could avoid
+    // FIXME We could make a search on neighbours and leaders only once
     for (unsigned long t = K; t < N; t++) {
         matrix<unsigned long> T_next(T);
         matrix<double> X_next(X);
 
         auto vs = boost::vertices(*network);
-        for(auto  it = vs.first; it != vs.second; it++) {
+        for (auto it : make_iterator_range(vs)) {
             unsigned long selectedArmIdx;
-            auto search = leaders.find(*it);
+            auto search = leaders.find(it);
             if (search != leaders.end()) {
-                selectedArmIdx = UCBNetworkPolicy::argmaxUCB(*it, network, t, T, X);
+                selectedArmIdx = UCBNetworkPolicy::argmaxUCB(it, network, t, T, X);
             }
             else {
-                auto neighbours = boost::adjacent_vertices(*it, *network);
+                auto neighbours = boost::adjacent_vertices(it, *network);
                 bool found = false;
                 for (auto vd : make_iterator_range(neighbours)) {
                     auto search = leaders.find(vd);
@@ -72,9 +72,9 @@ bool FollowYourLeaderNetworkPolicy::run(std::default_random_engine &generator, i
 
             double reward = bandit->getArms()[selectedArmIdx]->sample(generator);
 
-            T_next(*it, selectedArmIdx) += 1;
-            X_next(*it, selectedArmIdx) += reward;
-            new_actions[*it] = selectedArmIdx;
+            T_next(it, selectedArmIdx) += 1;
+            X_next(it, selectedArmIdx) += reward;
+            new_actions[it] = selectedArmIdx;
         }
 
         previous_actions = new_actions;

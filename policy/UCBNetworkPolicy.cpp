@@ -54,10 +54,10 @@ bool UCBNetworkPolicy::run(std::default_random_engine &generator, int N) {
 
     for (unsigned long t = 0; t < K; t++) {
         auto vs = boost::vertices(*network);
-        for(auto  it = vs.first; it != vs.second; it++) {
+        for (auto it : make_iterator_range(vs)) {
             double reward = bandit->getArms()[t]->sample(generator);
-            T(*it, t) += 1;
-            X(*it, t) += reward;
+            T(it, t) += 1;
+            X(it, t) += reward;
         }
     }
 
@@ -66,13 +66,13 @@ bool UCBNetworkPolicy::run(std::default_random_engine &generator, int N) {
         matrix<double> X_next(X);
 
         auto vs = boost::vertices(*network);
-        for(auto  it = vs.first; it != vs.second; it++) {
-            unsigned long selectedArmIdx = UCBNetworkPolicy::argmaxUCB(*it, network, t, T, X);
+        for (auto it : make_iterator_range(vs)) {
+            unsigned long selectedArmIdx = UCBNetworkPolicy::argmaxUCB(it, network, t, T, X);
 
             double reward = bandit->getArms()[selectedArmIdx]->sample(generator);
 
-            T_next(*it, selectedArmIdx) += 1;
-            X_next(*it, selectedArmIdx) += reward;
+            T_next(it, selectedArmIdx) += 1;
+            X_next(it, selectedArmIdx) += reward;
         }
 
         T = T_next;
