@@ -33,12 +33,11 @@ std::pair<matrix<unsigned long>, matrix<double>>  FollowYourLeaderNetworkPolicy:
     std::vector<int> new_actions(network->vertex_set().size());
 
     for (unsigned long t = 0; t < K; t++) {
-        auto vs = boost::vertices(*network);
-        for (auto it : make_iterator_range(vs)) {
+        for (auto userIdx : network->getVertices()) {
             double reward = bandit->getArms()[t]->sample(generator);
-            T(it, t) += 1;
-            X(it, t) += reward;
-            previous_actions[it] = t;
+            T(userIdx, t) += 1;
+            X(userIdx, t) += reward;
+            previous_actions[userIdx] = t;
         }
     }
 
@@ -47,20 +46,17 @@ std::pair<matrix<unsigned long>, matrix<double>>  FollowYourLeaderNetworkPolicy:
         matrix<unsigned long> T_next(T);
         matrix<double> X_next(X);
 
-        auto vs = boost::vertices(*network);
-        for (auto it : make_iterator_range(vs)) {
+        for (auto userIdx : network->getVertices()) {
             unsigned long selectedArmIdx;
-            auto search = leaders.find(it);
-            if (search != leaders.end()) {
-                selectedArmIdx = UCBNetworkPolicy::argmaxUCB(it, network, t, T, X);
+
+            if (leaders.find(userIdx) != leaders.end()) {
+                selectedArmIdx = UCBNetworkPolicy::argmaxUCB(userIdx, network, t, T, X);
             }
             else {
-                auto neighbours = boost::adjacent_vertices(it, *network);
                 bool found = false;
-                for (auto vd : make_iterator_range(neighbours)) {
-                    auto search = leaders.find(vd);
-                    if (search != leaders.end()) {
-                        selectedArmIdx = previous_actions[vd];
+                for (auto neighborIdx : network->getNeighbors(userIdx)) {
+                    if (leaders.find(neighborIdx) != leaders.end()) {
+                        selectedArmIdx = previous_actions[neighborIdx];
                         found = true;
                         break;
                     }
@@ -72,9 +68,9 @@ std::pair<matrix<unsigned long>, matrix<double>>  FollowYourLeaderNetworkPolicy:
 
             double reward = bandit->getArms()[selectedArmIdx]->sample(generator);
 
-            T_next(it, selectedArmIdx) += 1;
-            X_next(it, selectedArmIdx) += reward;
-            new_actions[it] = selectedArmIdx;
+            T_next(userIdx, selectedArmIdx) += 1;
+            X_next(userIdx, selectedArmIdx) += reward;
+            new_actions[userIdx] = selectedArmIdx;
         }
 
         previous_actions = new_actions;
