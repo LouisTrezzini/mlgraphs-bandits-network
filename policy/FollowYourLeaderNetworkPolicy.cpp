@@ -29,22 +29,14 @@ std::pair<matrix<unsigned long>, matrix<double>>  FollowYourLeaderNetworkPolicy:
     // FIXME This assumes all vertices are [|0, N - 1|]
     matrix<unsigned long> T = zero_matrix(network->vertex_set().size(), K);
     matrix<double> X = zero_matrix(network->vertex_set().size(), K);
-    std::vector<int> previous_actions(network->vertex_set().size());
-    std::vector<int> new_actions(network->vertex_set().size());
+    std::vector<unsigned long> actions(network->vertex_set().size());
 
-    for (unsigned long t = 0; t < K; t++) {
-        for (auto userIdx : network->getVertices()) {
-            double reward = bandit->getArms()[t]->sample(generator);
-            T(userIdx, t) += 1;
-            X(userIdx, t) += reward;
-            previous_actions[userIdx] = t;
-        }
-    }
 
     // FIXME We could make a search on neighbours and leaders only once
-    for (unsigned long t = K; t < N; t++) {
+    for (unsigned long t = 0; t < N; t++) {
         matrix<unsigned long> T_next(T);
         matrix<double> X_next(X);
+        std::vector<unsigned long> actions_next(actions);
 
         for (auto userIdx : network->getVertices()) {
             unsigned long selectedArmIdx;
@@ -53,16 +45,24 @@ std::pair<matrix<unsigned long>, matrix<double>>  FollowYourLeaderNetworkPolicy:
                 selectedArmIdx = UCBNetworkPolicy::argmaxUCB(userIdx, network, t, T, X);
             }
             else {
-                bool found = false;
-                for (auto neighborIdx : network->getNeighbors(userIdx)) {
-                    if (leaders.find(neighborIdx) != leaders.end()) {
-                        selectedArmIdx = previous_actions[neighborIdx];
-                        found = true;
-                        break;
-                    }
+                if (t == 0) {
+                    std::uniform_int_distribution<unsigned long> dist(0, K - 1);
+                    unsigned long randomArmIdx = dist(generator);
+
+                    selectedArmIdx = randomArmIdx;
                 }
-                if (!found) {
-                    throw UnproperSetOfLeadersException();
+                else {
+                    bool found = false;
+                    for (auto neighborIdx : network->getNeighbors(userIdx)) {
+                        if (leaders.find(neighborIdx) != leaders.end()) {
+                            selectedArmIdx = actions[neighborIdx];
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        throw UnproperSetOfLeadersException();
+                    }
                 }
             }
 
@@ -70,12 +70,12 @@ std::pair<matrix<unsigned long>, matrix<double>>  FollowYourLeaderNetworkPolicy:
 
             T_next(userIdx, selectedArmIdx) += 1;
             X_next(userIdx, selectedArmIdx) += reward;
-            new_actions[userIdx] = selectedArmIdx;
+            actions_next[userIdx] = selectedArmIdx;
         }
 
-        previous_actions = new_actions;
         T = T_next;
         X = X_next;
+        actions = actions_next;
     }
 
     return std::pair(T, X);
