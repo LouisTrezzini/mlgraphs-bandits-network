@@ -20,7 +20,8 @@ struct UnproperSetOfLeadersException : public std::exception
     }
 };
 
-std::pair<matrix<unsigned long>, matrix<double>>  FollowYourLeaderNetworkPolicy::run(std::default_random_engine &generator, int N) {
+std::pair<matrix<unsigned long>, matrix<double>>  FollowYourLeaderNetworkPolicy::run(
+        std::default_random_engine &generator, unsigned long horizon) {
 
     auto bandit = this->getBanditNetwork()->getBandit();
     auto network = this->getBanditNetwork()->getNetwork();
@@ -33,7 +34,7 @@ std::pair<matrix<unsigned long>, matrix<double>>  FollowYourLeaderNetworkPolicy:
 
 
     // FIXME We could make a search on neighbours and leaders only once
-    for (unsigned long t = 0; t < N; t++) {
+    for (unsigned long t = 0; t < horizon; t++) {
         matrix<unsigned long> T_next(T);
         matrix<double> X_next(X);
         std::vector<unsigned long> actions_next(actions);

@@ -12,7 +12,6 @@
 #include "monte-carlo/MonteCarlo.h"
 
 
-
 int main(int argc, char *argv[]) {
 
     int mode = 1;
@@ -26,7 +25,7 @@ int main(int argc, char *argv[]) {
 
             std::cout << g.vertex_set() << std::endl;
 
-            std::vector<IArm*> arms = {
+            std::vector<IArm *> arms = {
                     new ArmBernoulli(0.5),
                     new ArmBernoulli(0.7),
             };
@@ -56,11 +55,8 @@ int main(int argc, char *argv[]) {
             const BanditNetwork banditNetwork(&MAB, &g);
 
             const std::unordered_set<int> leaders = {0};
-            IPolicy *policy1;
-            IPolicy *policy2;
-
-            policy1 = new FollowYourLeaderNetworkPolicy(&banditNetwork, leaders);
-            policy2 = new UCBNetworkPolicy(&banditNetwork);
+            IPolicy *policy1 = new FollowYourLeaderNetworkPolicy(&banditNetwork, leaders);
+            IPolicy *policy2 = new UCBNetworkPolicy(&banditNetwork);
 
             MonteCarlo monte_carlo_simulator(100, 10000);
 

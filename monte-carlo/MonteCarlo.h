@@ -5,10 +5,10 @@
 
 class MonteCarlo {
     int N;
-    int Time;
+    int horizon;
 
 public:
-    MonteCarlo(const int N, const int Time): N(N), Time(Time) {}
+    MonteCarlo(const int N, const int horizon): N(N), horizon(horizon) {}
 
     void simulate(IPolicy *policy, const int seed = time(NULL));
 };

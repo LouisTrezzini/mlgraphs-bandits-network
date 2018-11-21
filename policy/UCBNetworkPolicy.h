@@ -12,7 +12,7 @@ class UCBNetworkPolicy : public IPolicy {
 public:
     explicit UCBNetworkPolicy(const BanditNetwork *banditNetwork) : IPolicy(banditNetwork) {}
 
-    std::pair<matrix<unsigned long>, matrix<double>>  run(std::default_random_engine &generator, int N) override;
+    std::pair<matrix<unsigned long>, matrix<double>>  run(std::default_random_engine &generator, unsigned long horizon) override;
 
     static unsigned long argmaxUCB(unsigned long u, const Network *network, unsigned long t, matrix<unsigned long> T, matrix<double>X);
 

@@ -45,7 +45,8 @@ unsigned long UCBNetworkPolicy::argmaxUCB(
     return indicesMax[dist(engine)];
 }
 
-std::pair<matrix<unsigned long>, matrix<double>> UCBNetworkPolicy::run(std::default_random_engine &generator, int N) {
+std::pair<matrix<unsigned long>, matrix<double>> UCBNetworkPolicy::run(std::default_random_engine &generator,
+                                                                       unsigned long horizon) {
 
     auto bandit = this->getBanditNetwork()->getBandit();
     auto network = this->getBanditNetwork()->getNetwork();
@@ -63,7 +64,7 @@ std::pair<matrix<unsigned long>, matrix<double>> UCBNetworkPolicy::run(std::defa
         }
     }
 
-    for (unsigned long t = K; t < N; t++) {
+    for (unsigned long t = K; t < horizon; t++) {
         matrix<unsigned long> T_next(T);
         matrix<double> X_next(X);
 
