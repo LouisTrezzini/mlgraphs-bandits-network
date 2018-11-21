@@ -7,8 +7,8 @@
 using namespace boost::numeric::ublas;
 
 double valueForArmAndUser(
-        unsigned long i, unsigned long u, const Network *network, unsigned long t, matrix<unsigned long> T,
-        matrix<double> X) {
+        unsigned long i, unsigned long u, const Network *network, unsigned long t, const matrix<unsigned long> &T,
+        const matrix<double> &X) {
     double S = X(u, i);
     unsigned long m = T(u, i);
 
@@ -21,8 +21,8 @@ double valueForArmAndUser(
 }
 
 unsigned long UCBNetworkPolicy::argmaxUCB(
-        unsigned long u, const Network *network, unsigned long t, matrix<unsigned long> T,
-        matrix<double> X) {
+        unsigned long u, const Network *network, unsigned long t, const matrix<unsigned long> &T,
+        const matrix<double> &X) {
     double valueMax = valueForArmAndUser(0, u, network, t, T, X);
     std::vector<unsigned long> indicesMax = {0};
 

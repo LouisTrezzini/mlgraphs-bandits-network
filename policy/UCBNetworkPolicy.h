@@ -14,7 +14,7 @@ public:
 
     PolicyResult run(std::default_random_engine &generator, unsigned long horizon) override;
 
-    static unsigned long argmaxUCB(unsigned long u, const Network *network, unsigned long t, matrix<unsigned long> T, matrix<double>X);
+    static unsigned long argmaxUCB(unsigned long u, const Network *network, unsigned long t, const matrix<unsigned long> &T, const matrix<double> &X);
 
 };
 
