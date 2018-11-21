@@ -41,6 +41,47 @@ int main(int argc, char *argv[]) {
         }
 
         case 1: {
+            Network star = NetworkFactory::createStarGraph(10);
+            Network fc = NetworkFactory::createFullyConnectedGraph(10);
+            Network fd = NetworkFactory::createFullyDisconnectedGraph(10);
+            Network circular = NetworkFactory::createCircularGraph(10);
+
+
+            std::vector<IArm *> arms = {
+                    new ArmBernoulli(0.5),
+                    new ArmBernoulli(0.7),
+            };
+            const Bandit MAB(arms);
+            const BanditNetwork banditNetworkStar(&MAB, &star);
+            const BanditNetwork banditNetworkFC(&MAB, &fc);
+            const BanditNetwork banditNetworkFD(&MAB, &fd);
+            const BanditNetwork banditNetworkCircular(&MAB, &circular);
+
+
+            const std::unordered_set<int> leaders = {0};
+            IPolicy *policyStar = new UCBNetworkPolicy(&banditNetworkStar);
+            IPolicy *policyFC = new UCBNetworkPolicy(&banditNetworkFC);
+            IPolicy *policyFD = new UCBNetworkPolicy(&banditNetworkFD);
+            IPolicy *policyCircular = new UCBNetworkPolicy(&banditNetworkCircular);
+
+            MonteCarlo monte_carlo_simulator(100, 100000);
+
+            std::cout << "UCB policy star network" << std::endl;
+            monte_carlo_simulator.simulate(policyStar, "../experiment-1/UCBStar.txt");
+            std::cout << "UCB policy FC network" << std::endl;
+            // No seed is specified, so the random seed is used
+            monte_carlo_simulator.simulate(policyFC, "../experiment-1/UCBFC.txt");
+            std::cout << "UCB policy FC network" << std::endl;
+            // No seed is specified, so the random seed is used
+            monte_carlo_simulator.simulate(policyFD, "../experiment-1/UCBFD.txt");
+            std::cout << "UCB policy circular network" << std::endl;
+            // No seed is specified, so the random seed is used
+            monte_carlo_simulator.simulate(policyCircular, "../experiment-1/UCBCircular.txt");
+
+            return 0;
+        }
+
+        case 2: {
             Network g = NetworkFactory::createStarGraph(5);
 
             GraphViz::write(g, "network.graphviz");

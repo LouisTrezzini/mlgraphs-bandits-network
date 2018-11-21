@@ -38,7 +38,7 @@ void MonteCarlo::simulate(IPolicy *policy, const std::string &file_name, const i
 void MonteCarlo::writeResults(std::vector<double> rewards, double maximumRewardPerRound, const std::string &file_name) {
     std::ofstream outFile;
     outFile.open(file_name);
-    outFile << "rewards maxumum_reward_per_round" << "\n";
+    outFile << "reward maximum_reward" << "\n";
     for (unsigned int round = 0; round < rewards.size(); round++) {
         outFile << rewards[round] << " " << maximumRewardPerRound * (round + 1) << "\n";
     }
