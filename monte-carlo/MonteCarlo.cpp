@@ -1,18 +1,20 @@
 #include "MonteCarlo.h"
+#include "../policy/PolicyResult.h"
 #include <chrono>
 
 void MonteCarlo::simulate(IPolicy *policy, const int seed) {
-    matrix<unsigned long> T;
-    matrix<double> X;
-    double total_reward = 0;
+    std::vector<double> rewards(horizon, 0);
     std::default_random_engine generator;
     generator.seed(seed);
 
     auto start = std::chrono::high_resolution_clock::now();
 
     for (unsigned long i = 0; i < N; i ++) {
-        std::tie(T, X) = policy->run(generator, horizon);
-        total_reward += IPolicy::total_reward(X);
+        PolicyResult policy_result = policy->run(generator, horizon);
+        std::vector<double> rewards_sample = policy_result.rewardsOverTime();
+        for (unsigned long t = 0; t < horizon; t++) {
+            rewards[t] += rewards_sample[t];
+        }
     }
 
     auto end = std::chrono::high_resolution_clock::now();
@@ -20,6 +22,8 @@ void MonteCarlo::simulate(IPolicy *policy, const int seed) {
 
     std::cout << "Monte Carlo simulated " << N << " trajectories in " << elapsedSeconds.count() << "s" << std::endl;
 
-    total_reward /= N;
-    std::cout << "Average final reward: " << total_reward << std::endl;
+    for (unsigned long t = 0; t < horizon; t++) {
+        rewards[t] /= N;
+    }
+    std::cout << "Average final reward: " << rewards[rewards.size() - 1] << std::endl;
 }

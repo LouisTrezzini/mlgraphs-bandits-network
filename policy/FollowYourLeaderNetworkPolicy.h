@@ -9,7 +9,7 @@ class FollowYourLeaderNetworkPolicy : public IPolicy {
 public:
     explicit FollowYourLeaderNetworkPolicy(const BanditNetwork *banditNetwork, const std::unordered_set<int> &leaders) : IPolicy(banditNetwork), leaders(leaders) {}
 
-    std::pair<matrix<unsigned long>, matrix<double>>  run(std::default_random_engine &generator, unsigned long horizon) override;
+    PolicyResult run(std::default_random_engine &generator, unsigned long horizon) override;
 
 };
 

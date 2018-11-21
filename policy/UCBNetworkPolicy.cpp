@@ -1,8 +1,8 @@
 #include "UCBNetworkPolicy.h"
+#include "PolicyResult.h"
 
 #include <vector>
 #include <boost/numeric/ublas/matrix.hpp>
-#include <boost/numeric/ublas/io.hpp>
 
 using namespace boost::numeric::ublas;
 
@@ -45,8 +45,8 @@ unsigned long UCBNetworkPolicy::argmaxUCB(
     return indicesMax[dist(engine)];
 }
 
-std::pair<matrix<unsigned long>, matrix<double>> UCBNetworkPolicy::run(std::default_random_engine &generator,
-                                                                       unsigned long horizon) {
+PolicyResult UCBNetworkPolicy::run(std::default_random_engine &generator,
+                                   unsigned long horizon) {
 
     auto bandit = this->getBanditNetwork()->getBandit();
     auto network = this->getBanditNetwork()->getNetwork();
@@ -55,6 +55,7 @@ std::pair<matrix<unsigned long>, matrix<double>> UCBNetworkPolicy::run(std::defa
     // FIXME This assumes all vertices are [|0, N - 1|]
     matrix<unsigned long> T = zero_matrix(network->vertex_set().size(), K);
     matrix<double> X = zero_matrix(network->vertex_set().size(), K);
+    std::vector<matrix<double>> all_rewards;
 
     for (unsigned long t = 0; t < K; t++) {
         for (auto userIdx : network->getVertices()) {
@@ -62,6 +63,7 @@ std::pair<matrix<unsigned long>, matrix<double>> UCBNetworkPolicy::run(std::defa
             T(userIdx, t) += 1;
             X(userIdx, t) += reward;
         }
+        all_rewards.push_back(X);
     }
 
     for (unsigned long t = K; t < horizon; t++) {
@@ -79,7 +81,8 @@ std::pair<matrix<unsigned long>, matrix<double>> UCBNetworkPolicy::run(std::defa
 
         T = T_next;
         X = X_next;
+        all_rewards.push_back(X);
     }
 
-    return std::pair(T, X);
+    return PolicyResult(all_rewards);
 }

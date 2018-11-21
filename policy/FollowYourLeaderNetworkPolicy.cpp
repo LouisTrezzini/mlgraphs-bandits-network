@@ -1,11 +1,11 @@
 
 #include "FollowYourLeaderNetworkPolicy.h"
 #include "UCBNetworkPolicy.h"
+#include "PolicyResult.h"
 
 #include <vector>
 #include <boost/numeric/ublas/matrix.hpp>
 #include <boost/numeric/ublas/io.hpp>
-#include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/connected_components.hpp>
 
 
@@ -20,7 +20,7 @@ struct UnproperSetOfLeadersException : public std::exception
     }
 };
 
-std::pair<matrix<unsigned long>, matrix<double>>  FollowYourLeaderNetworkPolicy::run(
+PolicyResult FollowYourLeaderNetworkPolicy::run(
         std::default_random_engine &generator, unsigned long horizon) {
 
     auto bandit = this->getBanditNetwork()->getBandit();
@@ -31,6 +31,7 @@ std::pair<matrix<unsigned long>, matrix<double>>  FollowYourLeaderNetworkPolicy:
     matrix<unsigned long> T = zero_matrix(network->vertex_set().size(), K);
     matrix<double> X = zero_matrix(network->vertex_set().size(), K);
     std::vector<unsigned long> actions(network->vertex_set().size());
+    std::vector<matrix<double>> all_rewards;
 
 
     // FIXME We could make a search on neighbours and leaders only once
@@ -77,7 +78,8 @@ std::pair<matrix<unsigned long>, matrix<double>>  FollowYourLeaderNetworkPolicy:
         T = T_next;
         X = X_next;
         actions = actions_next;
+        all_rewards.push_back(X);
     }
 
-    return std::pair(T, X);
+    return PolicyResult(all_rewards);
 }

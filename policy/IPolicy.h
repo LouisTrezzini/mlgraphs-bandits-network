@@ -3,6 +3,7 @@
 #include <vector>
 #include "../bandit/BanditNetwork.h"
 #include <boost/numeric/ublas/matrix.hpp>
+#include "PolicyResult.h"
 
 using namespace boost::numeric::ublas;
 
@@ -17,16 +18,8 @@ public:
         return  this->banditNetwork;
     }
 
-    virtual std::pair<matrix<unsigned long>, matrix<double>>  run(std::default_random_engine &generator,
-                                                                  unsigned long horizon) = 0;
-
-    static double total_reward(const matrix<double> &X) {
-        double total = 0;
-        for (int i = 0; i < X.size1(); i++) {
-            for (int j = 0; j < X.size2(); j++) {
-                total += X(i, j);
-            }
-        }
-        return total;
-    }
+    virtual PolicyResult run(std::default_random_engine &generator,
+                             unsigned long horizon) = 0;
 };
+
+
