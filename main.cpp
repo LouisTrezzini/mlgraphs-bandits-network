@@ -62,10 +62,10 @@ int main(int argc, char *argv[]) {
 
             std::cout << "Follow your leader policy" << std::endl;
             // I specify the seed 0
-            monte_carlo_simulator.simulate(policy1, 0);
+            monte_carlo_simulator.simulate(policy1, "../FYL.txt", 0);
             std::cout << "UCB policy" << std::endl;
             // No seed is specified, so the random seed is used
-            monte_carlo_simulator.simulate(policy2);
+            monte_carlo_simulator.simulate(policy2, "../UCB.txt");
 
             return 0;
         }

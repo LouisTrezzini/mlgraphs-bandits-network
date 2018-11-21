@@ -10,7 +10,9 @@ class MonteCarlo {
 public:
     MonteCarlo(const int N, const int horizon): N(N), horizon(horizon) {}
 
-    void simulate(IPolicy *policy, const int seed = time(NULL));
+    void simulate(IPolicy *policy, const std::string &file_name, const int seed = time(NULL));
+
+    static void writeResults(std::vector<double> rewards, double bestArmMeanReward, const std::string &file_name);
 };
 
 #endif //MLGRAPHS_BANDITS_NETWORK_MONTECARLO_H

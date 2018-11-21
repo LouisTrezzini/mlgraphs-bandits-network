@@ -8,6 +8,7 @@ class ArmBernoulli : public IArm {
 public:
     explicit ArmBernoulli(double p) {
         this->distribution = std::bernoulli_distribution(p);
+        this->mean = p;
     }
 
     virtual double sample(std::default_random_engine &generator) override {

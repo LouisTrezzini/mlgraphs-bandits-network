@@ -22,6 +22,10 @@ public:
     const Network *getNetwork() const {
         return network;
     }
+
+    double maximumRewardPerRound() const {
+        return bandit->getBestMean() * network->m_vertices.size();
+    }
 };
 
 #endif //MLGRAPHS_BANDITS_NETWORK_BANDITNETWORK_H
