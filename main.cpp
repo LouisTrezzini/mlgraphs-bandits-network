@@ -71,7 +71,7 @@ int main(int argc, char *argv[]) {
             std::cout << "UCB policy FC network" << std::endl;
             // No seed is specified, so the random seed is used
             monte_carlo_simulator.simulate(policyFC, "../experiment-1/UCBFC.txt");
-            std::cout << "UCB policy FC network" << std::endl;
+            std::cout << "UCB policy FD network" << std::endl;
             // No seed is specified, so the random seed is used
             monte_carlo_simulator.simulate(policyFD, "../experiment-1/UCBFD.txt");
             std::cout << "UCB policy circular network" << std::endl;
