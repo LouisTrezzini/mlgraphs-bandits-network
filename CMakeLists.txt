@@ -24,7 +24,7 @@ set(UTILS_FILES
         util/GraphViz.h)
 
 
-set(SOURCE_FILES ${BANDIT_FILES} ${NETWORK_FILES} ${POLICY_FILES} ${UTILS_FILES} policy/FollowYourLeaderNetworkPolicy.h policy/FollowYourLeaderNetworkPolicy.cpp)
+set(SOURCE_FILES ${BANDIT_FILES} ${NETWORK_FILES} ${POLICY_FILES} ${UTILS_FILES} policy/FollowYourLeaderNetworkPolicy.h policy/FollowYourLeaderNetworkPolicy.cpp monte-carlo/MonteCarlo.h monte-carlo/MonteCarlo.cpp)
 
 add_executable(mlgraphs-bandits-network main.cpp ${SOURCE_FILES})
 target_link_libraries(mlgraphs-bandits-network pthread)

@@ -9,6 +9,8 @@
 #include "policy/UCBNetworkPolicy.h"
 #include "policy/FollowYourLeaderNetworkPolicy.h"
 #include "util/GraphViz.h"
+#include "monte-carlo/MonteCarlo.h"
+
 
 
 int main(int argc, char *argv[]) {
@@ -46,7 +48,7 @@ int main(int argc, char *argv[]) {
 
             std::cout << g.vertex_set() << std::endl;
 
-            std::vector<IArm*> arms = {
+            std::vector<IArm *> arms = {
                     new ArmBernoulli(0.5),
                     new ArmBernoulli(0.7),
             };
@@ -54,10 +56,20 @@ int main(int argc, char *argv[]) {
             const BanditNetwork banditNetwork(&MAB, &g);
 
             const std::unordered_set<int> leaders = {0};
-            FollowYourLeaderNetworkPolicy policy(&banditNetwork, leaders);
+            IPolicy *policy1;
+            IPolicy *policy2;
 
-            std::default_random_engine generator;
-            policy.run(generator, 10000);
+            policy1 = new FollowYourLeaderNetworkPolicy(&banditNetwork, leaders);
+            policy2 = new UCBNetworkPolicy(&banditNetwork);
+
+            MonteCarlo monte_carlo_simulator(100, 10000);
+
+            std::cout << "Follow your leader policy" << std::endl;
+            // I specify the seed 0
+            monte_carlo_simulator.simulate(policy1, 0);
+            std::cout << "UCB policy" << std::endl;
+            // No seed is specified, so the random seed is used
+            monte_carlo_simulator.simulate(policy2);
 
             return 0;
         }

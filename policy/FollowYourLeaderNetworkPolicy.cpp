@@ -20,7 +20,7 @@ struct UnproperSetOfLeadersException : public std::exception
     }
 };
 
-bool FollowYourLeaderNetworkPolicy::run(std::default_random_engine &generator, int N) {
+std::pair<matrix<unsigned long>, matrix<double>>  FollowYourLeaderNetworkPolicy::run(std::default_random_engine &generator, int N) {
 
     auto bandit = this->getBanditNetwork()->getBandit();
     auto network = this->getBanditNetwork()->getNetwork();
@@ -82,9 +82,5 @@ bool FollowYourLeaderNetworkPolicy::run(std::default_random_engine &generator, i
         X = X_next;
     }
 
-    std::cout << T << std::endl;
-    std::cout << X << std::endl;
-    std::cout << "Total reward " << IPolicy::total_reward(X);
-
-    return true;
+    return std::pair(T, X);
 }

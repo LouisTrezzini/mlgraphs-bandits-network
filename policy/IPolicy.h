@@ -17,7 +17,7 @@ public:
         return  this->banditNetwork;
     }
 
-    virtual bool run(std::default_random_engine &generator, int N) = 0;
+    virtual std::pair<matrix<unsigned long>, matrix<double>>  run(std::default_random_engine &generator, int N) = 0;
 
     static double total_reward(const matrix<double> &X) {
         double total = 0;
