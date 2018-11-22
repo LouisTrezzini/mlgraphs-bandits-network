@@ -4,22 +4,35 @@
 #include <vector>
 #include "IArm.h"
 
+struct ArmsAndMean {
+    double mean;
+    std::vector<unsigned long> arms;
+};
+
 class Bandit {
-    std::vector<IArm*> arms;
+    std::vector<IArm *> arms;
 public:
-    explicit Bandit(const std::vector<IArm*>& arms) {
+    explicit Bandit(const std::vector<IArm *> &arms) {
         this->arms = arms;
     }
 
-    double getBestMean() const {
+    ArmsAndMean getBestArmAndMean() const {
         double bestMean = -std::numeric_limits<double>::infinity();
-        for (unsigned long i = 0; i < arms.size(); i ++) {
-            bestMean = std::max(arms[i]->getMean(), bestMean);
+        std::vector<unsigned long> best_arms;
+        for (unsigned long i = 0; i < arms.size(); i++) {
+            if (bestMean == arms[i]->getMean()) {
+                best_arms.push_back(i);
+            }
+            if (bestMean < arms[i]->getMean()) {
+                bestMean = arms[i]->getMean();
+                best_arms = {i};
+            }
+
         }
-        return bestMean;
+        return ArmsAndMean{bestMean, best_arms};
     }
 
-    const std::vector<IArm*>& getArms() const {
+    const std::vector<IArm *> &getArms() const {
         return arms;
     }
 

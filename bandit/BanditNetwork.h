@@ -23,8 +23,14 @@ public:
         return network;
     }
 
-    double maximumRewardPerRound() const {
-        return bandit->getBestMean() * network->m_vertices.size();
+    ArmsAndMean maximumRewardPerRoundAndBestArms() const {
+        ArmsAndMean arms_and_mean = bandit->getBestArmAndMean();
+        arms_and_mean.mean *= network->m_vertices.size();
+        return arms_and_mean;
+    }
+
+    double actionsPerRound() const {
+        return network->m_vertices.size();
     }
 };
 

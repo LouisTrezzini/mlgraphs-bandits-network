@@ -3,35 +3,51 @@
 
 
 #include <boost/numeric/ublas/matrix.hpp>
+#include <vector>
 
 using namespace boost::numeric::ublas;
 
 class PolicyResult {
     std::vector<matrix<double>> allRewards;
+    std::vector<matrix<unsigned long>> allActions;
 public:
-    PolicyResult(const std::vector<matrix<double>> &allRewards) : allRewards(allRewards) {}
-
-    const std::vector<matrix<double>> &getAllRewards() const {
-        return allRewards;
-    }
+    PolicyResult(const std::vector<matrix<double>> &allRewards, const std::vector<matrix<unsigned long>> &allActions) : allRewards(allRewards), allActions(allActions) {}
 
     std::vector<double> rewardsOverTime() const {
         std::vector<double> rewards;
-        for (int i = 0; i < allRewards.size(); i++) {
-            rewards.push_back(PolicyResult::total_reward(allRewards[i]));
+        for (const auto &stepRewards : allRewards) {
+            rewards.push_back(PolicyResult::totalReward(stepRewards));
         }
         return rewards;
     }
 
+    std::vector<unsigned long> actionOverTime(const std::vector<unsigned long> &bestArms) const{
+        std::vector<unsigned long> actionOverTime;
+        for (const auto &stepActions : allActions) {
+            actionOverTime.push_back(PolicyResult::countAction(stepActions, bestArms));
+        }
+        return actionOverTime;
+    }
 
-    static double total_reward(const matrix<double> &X) {
+
+    static double totalReward(const matrix<double> &X) {
         double total = 0;
-        for (int i = 0; i < X.size1(); i++) {
-            for (int j = 0; j < X.size2(); j++) {
+        for (unsigned long i = 0; i < X.size1(); i++) {
+            for (unsigned long j = 0; j < X.size2(); j++) {
                 total += X(i, j);
             }
         }
         return total;
+    }
+
+    static unsigned long countAction(const matrix<unsigned long> &T, std::vector<unsigned long> bestArms) {
+        unsigned long count = 0;
+        for (unsigned long k = 0; k < T.size1(); k++) {
+            for (unsigned long arm: bestArms) {
+                count += T(k, arm);
+            }
+        }
+        return count;
     }
 };
 
