@@ -19,40 +19,40 @@ public:
 
     std::vector<double> rewardsOverTime() const {
         std::vector<double> rewards;
-        for (int i = 0; i < allRewards.size(); i++) {
-            rewards.push_back(PolicyResult::total_reward(allRewards[i]));
+        for (const auto &allReward : allRewards) {
+            rewards.push_back(PolicyResult::totalReward(allReward));
         }
         return rewards;
     }
 
-    std::vector<unsigned long> ActionIOverTime(const std::vector<int> &best_arms) const{
-        std::vector<unsigned long> action_i_over_time;
+    std::vector<unsigned long> ActionIOverTime(const std::vector<unsigned long> &bestArms) const{
+        std::vector<unsigned long> actionIOverTime;
         for (int i = 0; i < allRewards.size(); i++) {
-            action_i_over_time.push_back(PolicyResult::numberActionI(allActions[i], best_arms));
+            actionIOverTime.push_back(PolicyResult::numberActionI(allActions[i], bestArms));
         }
-        return action_i_over_time;
+        return actionIOverTime;
     }
 
 
-    static double total_reward(const matrix<double> &X) {
+    static double totalReward(const matrix<double> &X) {
         double total = 0;
-        for (int i = 0; i < X.size1(); i++) {
-            for (int j = 0; j < X.size2(); j++) {
+        for (unsigned long i = 0; i < X.size1(); i++) {
+            for (unsigned long j = 0; j < X.size2(); j++) {
                 total += X(i, j);
             }
         }
         return total;
     }
 
-    static double numberActionI(const matrix<unsigned long> &T, std::vector<int> best_arms) {
-        double total_actions_i = 0;
-        for (int k = 0; k < T.size1(); k++) {
-            for (const auto& arm: best_arms) {
-                total_actions_i += T(k, arm);
+    static unsigned long numberActionI(const matrix<unsigned long> &T, std::vector<unsigned long> bestArms) {
+        unsigned long totalActionsI = 0;
+        for (unsigned long k = 0; k < T.size1(); k++) {
+            for (const auto& arm: bestArms) {
+                totalActionsI += T(k, arm);
             }
 
         }
-        return total_actions_i;
+        return totalActionsI;
     }
 };
 

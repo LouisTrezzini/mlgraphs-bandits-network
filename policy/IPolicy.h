@@ -15,8 +15,7 @@ public:
         return  this->banditNetwork;
     }
 
-    virtual PolicyResult run(std::default_random_engine &generator,
-                             unsigned long horizon) = 0;
+    virtual PolicyResult run(std::default_random_engine &generator, unsigned long horizon) = 0;
 };
 
 
