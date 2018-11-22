@@ -7,8 +7,6 @@
 struct ArmsAndMean{
     double mean;
     std::vector<int> arms;
-
-    ArmsAndMean(double mean, const std::vector<int> &arm): arms(arms), mean(mean) {}
 };
 
 class Bandit {
@@ -20,18 +18,18 @@ public:
 
     ArmsAndMean getBestArmAndMean() const {
         double bestMean = -std::numeric_limits<double>::infinity();
-        std::vector<int> arms;
+        std::vector<int> best_arms;
         for (unsigned long i = 0; i < arms.size(); i ++) {
-            if (bestMean == arms[i].getMean() {
+            if (bestMean == arms[i]->getMean() {
                 arms.push_back(i);
             }
-            if (bestMean < arms[i].getMean()) {
-                bestMean = arms[i].getMean();
-                arms = std::vector<int> {i};
+            if (bestMean < arms[i]->getMean()) {
+                bestMean = arms[i]->getMean();
+                best_arms = std::vector<int> {i};
             }
 
         }
-        return ArmsAndMean(bestMean, arms);
+        return ArmsAndMean {bestMean, best_arms};
     }
 
     const std::vector<IArm*>& getArms() const {
