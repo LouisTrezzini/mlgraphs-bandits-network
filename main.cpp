@@ -14,7 +14,7 @@
 
 int main(int argc, char *argv[]) {
 
-    int mode = 2;
+    int mode = 3;
     if (argc >= 2) mode = atoi(argv[1]);
     switch (mode) {
 
@@ -40,6 +40,7 @@ int main(int argc, char *argv[]) {
             return 0;
         }
 
+        // Experiment 1
         case 1: {
             Network star = NetworkFactory::createStarGraph(10);
             Network fc = NetworkFactory::createFullyConnectedGraph(10);
@@ -81,6 +82,7 @@ int main(int argc, char *argv[]) {
             return 0;
         }
 
+        // Experiment 2
         case 2: {
             Network star = NetworkFactory::createStarGraph(20);
             Network fc = NetworkFactory::createFullyConnectedGraph(20);
@@ -130,32 +132,46 @@ int main(int argc, char *argv[]) {
             return 0;
         }
 
+        // Experiment 3
         case 3: {
-            Network g = NetworkFactory::createStarGraph(5);
+            Network star1 = NetworkFactory::createStarGraph(25);
+            Network star2 = NetworkFactory::createStarGraph(100);
+            Network star3 = NetworkFactory::createStarGraph(350);
 
-            GraphViz::write(g, "network.graphviz");
-
-            std::cout << g.vertex_set() << std::endl;
 
             std::vector<IArm *> arms = {
                     new ArmBernoulli(0.5),
                     new ArmBernoulli(0.7),
             };
             const Bandit MAB(arms);
-            const BanditNetwork banditNetwork(&MAB, &g);
+            const BanditNetwork banditNetwork25(&MAB, &star1);
+            const BanditNetwork banditNetwork100(&MAB, &star2);
+            const BanditNetwork banditNetwork350(&MAB, &star3);
 
             const std::unordered_set<int> leaders = {0};
-            IPolicy *policy1 = new FollowYourLeaderNetworkPolicy(&banditNetwork, leaders);
-            IPolicy *policy2 = new UCBNetworkPolicy(&banditNetwork);
+            IPolicy *policyFYL25 = new FollowYourLeaderNetworkPolicy(&banditNetwork25, leaders);
+            IPolicy *policyUCB25 = new UCBNetworkPolicy(&banditNetwork25);
+            IPolicy *policyFYL100 = new FollowYourLeaderNetworkPolicy(&banditNetwork100, leaders);
+            IPolicy *policyUCB100 = new UCBNetworkPolicy(&banditNetwork100);
+            IPolicy *policyFYL350 = new FollowYourLeaderNetworkPolicy(&banditNetwork350, leaders);
+            IPolicy *policyUCB350 = new UCBNetworkPolicy(&banditNetwork350);
 
-            MonteCarlo monte_carlo_simulator(100, 10000);
+            MonteCarlo monte_carlo_simulator(100, 100000);
 
-            std::cout << "Follow your leader policy" << std::endl;
-            // I specify the seed 0
-            monte_carlo_simulator.simulate(policy1, "../FYL.txt", 0);
-            std::cout << "UCB policy" << std::endl;
-            // No seed is specified, so the random seed is used
-            monte_carlo_simulator.simulate(policy2, "../UCB.txt");
+            std::cout << "Follow your leader policy, star graph with 25 nodes" << std::endl;
+            monte_carlo_simulator.simulate(policyFYL25, "../experiment-3/FYL25.txt", 0);
+            std::cout << "UCB policy, star graph with 25 nodes" << std::endl;
+            monte_carlo_simulator.simulate(policyUCB25, "../experiment-3/UCB25.txt", 0);
+
+            std::cout << "Follow your leader policy, star graph with 100 nodes" << std::endl;
+            monte_carlo_simulator.simulate(policyFYL100, "../experiment-3/FYL100.txt", 0);
+            std::cout << "UCB policy, star graph with 100 nodes" << std::endl;
+            monte_carlo_simulator.simulate(policyUCB100, "../experiment-3/UCB100.txt", 0);
+
+            std::cout << "Follow your leader policy, star graph with 350 nodes" << std::endl;
+            monte_carlo_simulator.simulate(policyFYL350, "../experiment-3/FYL350.txt", 0);
+            std::cout << "UCB, star graph with 350 nodes" << std::endl;
+            monte_carlo_simulator.simulate(policyUCB350, "../experiment-3/UCB350.txt", 0);
 
             return 0;
         }
