@@ -2,10 +2,7 @@
 
 #include <vector>
 #include "../bandit/BanditNetwork.h"
-#include <boost/numeric/ublas/matrix.hpp>
 #include "PolicyResult.h"
-
-using namespace boost::numeric::ublas;
 
 class IPolicy {
     const BanditNetwork *banditNetwork = nullptr;

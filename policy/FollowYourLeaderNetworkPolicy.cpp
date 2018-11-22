@@ -32,6 +32,7 @@ PolicyResult FollowYourLeaderNetworkPolicy::run(
     matrix<double> X = zero_matrix(network->vertex_set().size(), K);
     std::vector<unsigned long> actions(network->vertex_set().size());
     std::vector<matrix<double>> all_rewards;
+    std::vector<matrix<unsigned long>> all_actions;
 
 
     // FIXME We could make a search on neighbours and leaders only once
@@ -84,7 +85,8 @@ PolicyResult FollowYourLeaderNetworkPolicy::run(
         X = X_next;
         actions = actions_next;
         all_rewards.push_back(X);
+        all_actions.push_back(T);
     }
 
-    return PolicyResult(all_rewards);
+    return PolicyResult(all_rewards, all_actions);
 }

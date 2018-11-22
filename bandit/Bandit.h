@@ -4,6 +4,13 @@
 #include <vector>
 #include "IArm.h"
 
+struct ArmsAndMean{
+    double mean;
+    std::vector<int> arms;
+
+    ArmsAndMean(double mean, const std::vector<int> &arm): arms(arms), mean(mean) {}
+};
+
 class Bandit {
     std::vector<IArm*> arms;
 public:
@@ -11,12 +18,20 @@ public:
         this->arms = arms;
     }
 
-    double getBestMean() const {
+    ArmsAndMean getBestArmAndMean() const {
         double bestMean = -std::numeric_limits<double>::infinity();
+        std::vector<int> arms;
         for (unsigned long i = 0; i < arms.size(); i ++) {
-            bestMean = std::max(arms[i]->getMean(), bestMean);
+            if (bestMean == arms[i].getMean() {
+                arms.push_back(i);
+            }
+            if (bestMean < arms[i].getMean()) {
+                bestMean = arms[i].getMean();
+                arms = std::vector<int> {i};
+            }
+
         }
-        return bestMean;
+        return ArmsAndMean(bestMean, arms);
     }
 
     const std::vector<IArm*>& getArms() const {

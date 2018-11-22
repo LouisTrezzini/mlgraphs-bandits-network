@@ -2,9 +2,6 @@
 #include "PolicyResult.h"
 
 #include <vector>
-#include <boost/numeric/ublas/matrix.hpp>
-
-using namespace boost::numeric::ublas;
 
 double valueForArmAndUser(
         unsigned long i, unsigned long u, const Network *network, unsigned long t, const matrix<unsigned long> &T,
@@ -56,6 +53,7 @@ PolicyResult UCBNetworkPolicy::run(std::default_random_engine &generator,
     matrix<unsigned long> T = zero_matrix(network->vertex_set().size(), K);
     matrix<double> X = zero_matrix(network->vertex_set().size(), K);
     std::vector<matrix<double>> all_rewards;
+    std::vector<matrix<unsigned long>> all_actions;
 
     for (unsigned long t = 0; t < K; t++) {
         for (auto userIdx : network->getVertices()) {
@@ -82,7 +80,8 @@ PolicyResult UCBNetworkPolicy::run(std::default_random_engine &generator,
         T = T_next;
         X = X_next;
         all_rewards.push_back(X);
+        all_actions.push_back(T);
     }
 
-    return PolicyResult(all_rewards);
+    return PolicyResult(all_rewards, all_actions);
 }
