@@ -14,7 +14,7 @@
 
 int main(int argc, char *argv[]) {
 
-    int mode = 1;
+    int mode = 2;
     if (argc >= 2) mode = atoi(argv[1]);
     switch (mode) {
 
@@ -82,6 +82,55 @@ int main(int argc, char *argv[]) {
         }
 
         case 2: {
+            Network star = NetworkFactory::createStarGraph(20);
+            Network fc = NetworkFactory::createFullyConnectedGraph(20);
+            Network fd = NetworkFactory::createFullyDisconnectedGraph(20);
+            Network circular = NetworkFactory::createCircularGraph(20);
+
+
+            std::vector<IArm *> arms = {
+                    new ArmBernoulli(0.1),
+                    new ArmBernoulli(0.2),
+                    new ArmBernoulli(0.3),
+                    new ArmBernoulli(0.4),
+                    new ArmBernoulli(0.5),
+                    new ArmBernoulli(0.6),
+                    new ArmBernoulli(0.7),
+                    new ArmBernoulli(0.8),
+                    new ArmBernoulli(0.9),
+                    new ArmBernoulli(1.),
+            };
+            const Bandit MAB(arms);
+            const BanditNetwork banditNetworkStar(&MAB, &star);
+            const BanditNetwork banditNetworkFC(&MAB, &fc);
+            const BanditNetwork banditNetworkFD(&MAB, &fd);
+            const BanditNetwork banditNetworkCircular(&MAB, &circular);
+
+
+            const std::unordered_set<int> leaders = {0};
+            IPolicy *policyStar = new UCBNetworkPolicy(&banditNetworkStar);
+            IPolicy *policyFC = new UCBNetworkPolicy(&banditNetworkFC);
+            IPolicy *policyFD = new UCBNetworkPolicy(&banditNetworkFD);
+            IPolicy *policyCircular = new UCBNetworkPolicy(&banditNetworkCircular);
+
+            MonteCarlo monte_carlo_simulator(100, 100000);
+
+            std::cout << "UCB policy star network" << std::endl;
+            monte_carlo_simulator.simulate(policyStar, "../experiment-2/UCBStar.txt");
+            std::cout << "UCB policy FC network" << std::endl;
+            // No seed is specified, so the random seed is used
+            monte_carlo_simulator.simulate(policyFC, "../experiment-2/UCBFC.txt");
+            std::cout << "UCB policy FD network" << std::endl;
+            // No seed is specified, so the random seed is used
+            monte_carlo_simulator.simulate(policyFD, "../experiment-2/UCBFD.txt");
+            std::cout << "UCB policy circular network" << std::endl;
+            // No seed is specified, so the random seed is used
+            monte_carlo_simulator.simulate(policyCircular, "../experiment-2/UCBCircular.txt");
+
+            return 0;
+        }
+
+        case 3: {
             Network g = NetworkFactory::createStarGraph(5);
 
             GraphViz::write(g, "network.graphviz");
