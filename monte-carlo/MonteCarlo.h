@@ -4,11 +4,11 @@
 #include "../policy/IPolicy.h"
 
 class MonteCarlo {
-    int N;
-    int horizon;
+    unsigned long N;
+    unsigned long horizon;
 
 public:
-    MonteCarlo(const int N, const int horizon): N(N), horizon(horizon) {}
+    MonteCarlo(unsigned long N, unsigned long horizon): N(N), horizon(horizon) {}
 
     void simulate(IPolicy *policy, const std::string &file_name, const int seed = time(NULL));
 

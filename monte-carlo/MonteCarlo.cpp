@@ -45,8 +45,9 @@ void MonteCarlo::simulate(IPolicy *policy, const std::string &file_name, const i
         }
 
         for (unsigned long i = 0; i < N; i++) {
-            std::vector<double> rewardsSample = runResults[i].get().rewardsOverTime();
-            std::vector<unsigned long> actionsSample = runResults[i].get().ActionIOverTime(bestArms);
+            auto result = runResults[i].get();
+            auto rewardsSample = result.rewardsOverTime();
+            auto actionsSample = result.actionOverTime(bestArms);
             for (unsigned long t = 0; t < horizon; t++) {
                 rewards[t] += rewardsSample[t];
                 best_actions[t] += actionsSample[t];

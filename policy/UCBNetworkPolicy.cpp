@@ -52,8 +52,8 @@ PolicyResult UCBNetworkPolicy::run(std::default_random_engine &generator,
     // FIXME This assumes all vertices are [|0, N - 1|]
     matrix<unsigned long> T = zero_matrix(network->vertex_set().size(), K);
     matrix<double> X = zero_matrix(network->vertex_set().size(), K);
-    std::vector<matrix<double>> all_rewards;
-    std::vector<matrix<unsigned long>> all_actions;
+    std::vector<matrix<double>> allRewards;
+    std::vector<matrix<unsigned long>> allActions;
 
     for (unsigned long t = 0; t < K; t++) {
         for (auto userIdx : network->getVertices()) {
@@ -61,7 +61,8 @@ PolicyResult UCBNetworkPolicy::run(std::default_random_engine &generator,
             T(userIdx, t) += 1;
             X(userIdx, t) += reward;
         }
-        all_rewards.push_back(X);
+        allRewards.push_back(X);
+        allActions.push_back(T);
     }
 
     for (unsigned long t = K; t < horizon; t++) {
@@ -79,9 +80,9 @@ PolicyResult UCBNetworkPolicy::run(std::default_random_engine &generator,
 
         T = T_next;
         X = X_next;
-        all_rewards.push_back(X);
-        all_actions.push_back(T);
+        allRewards.push_back(X);
+        allActions.push_back(T);
     }
 
-    return PolicyResult(all_rewards, all_actions);
+    return PolicyResult(allRewards, allActions);
 }

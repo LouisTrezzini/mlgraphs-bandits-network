@@ -13,24 +13,20 @@ class PolicyResult {
 public:
     PolicyResult(const std::vector<matrix<double>> &allRewards, const std::vector<matrix<unsigned long>> &allActions) : allRewards(allRewards), allActions(allActions) {}
 
-    const std::vector<matrix<double>> &getAllRewards() const {
-        return allRewards;
-    }
-
     std::vector<double> rewardsOverTime() const {
         std::vector<double> rewards;
-        for (const auto &allReward : allRewards) {
-            rewards.push_back(PolicyResult::totalReward(allReward));
+        for (const auto &stepRewards : allRewards) {
+            rewards.push_back(PolicyResult::totalReward(stepRewards));
         }
         return rewards;
     }
 
-    std::vector<unsigned long> ActionIOverTime(const std::vector<unsigned long> &bestArms) const{
-        std::vector<unsigned long> actionIOverTime;
-        for (int i = 0; i < allRewards.size(); i++) {
-            actionIOverTime.push_back(PolicyResult::numberActionI(allActions[i], bestArms));
+    std::vector<unsigned long> actionOverTime(const std::vector<unsigned long> &bestArms) const{
+        std::vector<unsigned long> actionOverTime;
+        for (const auto &stepActions : allActions) {
+            actionOverTime.push_back(PolicyResult::countAction(stepActions, bestArms));
         }
-        return actionIOverTime;
+        return actionOverTime;
     }
 
 
@@ -44,15 +40,14 @@ public:
         return total;
     }
 
-    static unsigned long numberActionI(const matrix<unsigned long> &T, std::vector<unsigned long> bestArms) {
-        unsigned long totalActionsI = 0;
+    static unsigned long countAction(const matrix<unsigned long> &T, std::vector<unsigned long> bestArms) {
+        unsigned long count = 0;
         for (unsigned long k = 0; k < T.size1(); k++) {
-            for (const auto& arm: bestArms) {
-                totalActionsI += T(k, arm);
+            for (unsigned long arm: bestArms) {
+                count += T(k, arm);
             }
-
         }
-        return totalActionsI;
+        return count;
     }
 };
 
