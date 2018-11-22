@@ -30,7 +30,7 @@ public:
     }
 
     double actionsPerRound() const {
-        return bandit->getK() * network->m_vertices.size();
+        return network->m_vertices.size();
     }
 };
 

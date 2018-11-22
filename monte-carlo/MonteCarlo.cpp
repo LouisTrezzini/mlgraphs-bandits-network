@@ -62,6 +62,7 @@ void MonteCarlo::simulate(IPolicy *policy, const std::string &file_name, const i
 
     for (unsigned long t = 0; t < horizon; t++) {
         rewards[t] /= N;
+        best_actions[t] /= N;
     }
 
     writeResults(rewards, best_actions, maximumRewardPerRound, policy->getBanditNetwork()->actionsPerRound(),
@@ -74,7 +75,7 @@ void MonteCarlo::writeResults(std::vector<double> rewards, std::vector<unsigned 
                               double maximumRewardPerRound, double actionsPerRound, const std::string &fileName) {
     std::ofstream outFile;
     outFile.open(fileName);
-    outFile << "reward maximum_reward best_actions total actions" << "\n";
+    outFile << "reward maximum_reward best_actions total_actions" << "\n";
     for (unsigned int round = 0; round < rewards.size(); round++) {
         outFile << rewards[round] << " " << maximumRewardPerRound * (round + 1) << " " << best_actions[round] << " "
                 << actionsPerRound * (round + 1) << "\n";
