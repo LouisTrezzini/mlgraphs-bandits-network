@@ -58,8 +58,6 @@ int main(int argc, char *argv[]) {
             const BanditNetwork banditNetworkFD(&MAB, &fd);
             const BanditNetwork banditNetworkCircular(&MAB, &circular);
 
-
-            const std::unordered_set<int> leaders = {0};
             IPolicy *policyStar = new UCBNetworkPolicy(&banditNetworkStar);
             IPolicy *policyFC = new UCBNetworkPolicy(&banditNetworkFC);
             IPolicy *policyFD = new UCBNetworkPolicy(&banditNetworkFD);
@@ -100,7 +98,7 @@ int main(int argc, char *argv[]) {
                     new ArmBernoulli(0.7),
                     new ArmBernoulli(0.8),
                     new ArmBernoulli(0.9),
-                    new ArmBernoulli(1.),
+                    new ArmBernoulli(1.0),
             };
             const Bandit MAB(arms);
             const BanditNetwork banditNetworkStar(&MAB, &star);
@@ -109,7 +107,6 @@ int main(int argc, char *argv[]) {
             const BanditNetwork banditNetworkCircular(&MAB, &circular);
 
 
-            const std::unordered_set<int> leaders = {0};
             IPolicy *policyStar = new UCBNetworkPolicy(&banditNetworkStar);
             IPolicy *policyFC = new UCBNetworkPolicy(&banditNetworkFC);
             IPolicy *policyFD = new UCBNetworkPolicy(&banditNetworkFD);

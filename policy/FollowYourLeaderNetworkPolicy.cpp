@@ -14,8 +14,7 @@ using namespace boost::numeric::ublas;
 
 struct UnproperSetOfLeadersException : public std::exception
 {
-    const char * what () const throw ()
-    {
+    const char * what () const noexcept {
         return "The set of leaders is not compatible with the graph";
     }
 };

@@ -12,16 +12,15 @@ namespace fs = std::filesystem;
 const bool USE_MULTI_THREADING = true;
 
 
-void MonteCarlo::simulate(IPolicy *policy, const std::string &file_name, const int seed) {
+void MonteCarlo::simulate(IPolicy *policy, const std::string &fileName, const int seed) {
     std::vector<double> rewards(horizon, 0);
-    std::vector<unsigned long> best_actions(horizon, 0);
+    std::vector<unsigned long> bestActionPlayed(horizon, 0);
     std::default_random_engine generator;
     generator.seed(seed);
 
     auto start = std::chrono::high_resolution_clock::now();
 
     ArmsAndMean armsAndMean = policy->getBanditNetwork()->maximumRewardPerRoundAndBestArms();
-    double maximumRewardPerRound = armsAndMean.mean;
     std::vector<unsigned long> bestArms = armsAndMean.arms;
 
 
@@ -50,7 +49,7 @@ void MonteCarlo::simulate(IPolicy *policy, const std::string &file_name, const i
             auto actionsSample = result.actionOverTime(bestArms);
             for (unsigned long t = 0; t < horizon; t++) {
                 rewards[t] += rewardsSample[t];
-                best_actions[t] += actionsSample[t];
+                bestActionPlayed[t] += actionsSample[t];
             }
         }
     }
@@ -62,22 +61,25 @@ void MonteCarlo::simulate(IPolicy *policy, const std::string &file_name, const i
 
     for (unsigned long t = 0; t < horizon; t++) {
         rewards[t] /= N;
-        best_actions[t] /= N;
+        bestActionPlayed[t] /= N;
     }
 
-    writeResults(rewards, best_actions, maximumRewardPerRound, policy->getBanditNetwork()->actionsPerRound(),
-                 file_name);
+    double maximumRewardPerRound = armsAndMean.mean;
+    unsigned long actionsPerRound = policy->getBanditNetwork()->actionsPerRound();
+
+    writeResults(rewards, bestActionPlayed, maximumRewardPerRound, actionsPerRound, fileName);
 
     std::cout << "Average final reward: " << rewards[rewards.size() - 1] << std::endl;
 }
 
-void MonteCarlo::writeResults(std::vector<double> rewards, std::vector<unsigned long> best_actions,
-                              double maximumRewardPerRound, double actionsPerRound, const std::string &fileName) {
+void MonteCarlo::writeResults(std::vector<double> rewards, std::vector<unsigned long> bestActionPlayed,
+                              double maximumRewardPerRound, unsigned long actionsPerRound, const std::string &fileName) {
     std::ofstream outFile;
     outFile.open(fileName);
+    outFile.precision(std::numeric_limits<double>::max_digits10);
     outFile << "reward maximum_reward best_actions total_actions" << "\n";
     for (unsigned int round = 0; round < rewards.size(); round++) {
-        outFile << rewards[round] << " " << maximumRewardPerRound * (round + 1) << " " << best_actions[round] << " "
+        outFile << rewards[round] << " " << maximumRewardPerRound * (round + 1) << " " << bestActionPlayed[round] << " "
                 << actionsPerRound * (round + 1) << "\n";
     }
     outFile.close();

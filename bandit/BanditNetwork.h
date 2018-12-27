@@ -29,7 +29,7 @@ public:
         return arms_and_mean;
     }
 
-    double actionsPerRound() const {
+    unsigned long actionsPerRound() const {
         return network->m_vertices.size();
     }
 };
