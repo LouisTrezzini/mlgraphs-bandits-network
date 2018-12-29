@@ -42,7 +42,7 @@ unsigned long UCBNetworkPolicy::argmaxUCB(
     return indicesMax[dist(engine)];
 }
 
-PolicyResult UCBNetworkPolicy::run(std::default_random_engine &generator,
+PolicyResult UCBNetworkPolicy::run(RNG &generator,
                                    unsigned long horizon) {
 
     auto bandit = this->getBanditNetwork()->getBandit();

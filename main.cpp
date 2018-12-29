@@ -34,7 +34,7 @@ int main(int argc, char *argv[]) {
 
             UCBNetworkPolicy policy(&banditNetwork);
 
-            std::default_random_engine generator;
+            RNG generator;
             policy.run(generator, 10000);
 
             return 0;

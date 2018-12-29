@@ -4,15 +4,18 @@
 
 #include <random>
 
+typedef std::mt19937_64 RNG;
+
+
 class IArm {
 protected:
-    double mean;
+    double mean = 0.0;
 public:
     double getMean() const {
         return mean;
     }
 
-    virtual double sample(std::default_random_engine &generator) = 0;
+    virtual double sample(RNG &generator) = 0;
 };
 
 #endif //MLGRAPHS_BANDITS_NETWORK_IARM_H

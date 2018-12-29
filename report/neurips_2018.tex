@@ -24,6 +24,8 @@
 \usepackage{booktabs}       % professional-quality tables
 \usepackage{amsfonts}       % blackboard math symbols
 \usepackage{microtype}      % microtypography
+\usepackage{graphicx}
+\usepackage{float}
 
 \title{Bandit networks}
 
@@ -64,10 +66,67 @@
 
 \section{Theoretical contributions}
 
+%FIXME
+
+\newpage
 
 \section{Experimental results}
 
 \subsection{Reproducing experiments from \cite{DBLP:journals/corr/KollaJG16}}
+
+\subsubsection{Experiment 1}
+
+Performance comparison of UCB-Network policy on various 10 node networks: 2 arms, Bernoulli rewards with means $0.5$ and $0.7$.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[height=5cm]{fig1_1.png}
+  \includegraphics[height=5cm]{fig1_2.png}
+  \caption{Results for experiment 1 from \cite{DBLP:journals/corr/KollaJG16}.}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[height=5cm]{fig1_1_ours.png}
+  \includegraphics[height=5cm]{fig1_2_ours.png}
+  \caption{Our results for experiment 1.}
+\end{figure}
+
+\subsubsection{Experiment 2}
+
+Performance comparison of UCB-Network policy on various 20 node networks: 10 arms, Bernoulli rewards with means $0.1, 0.2, \dots, 1$.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[height=5cm]{fig2_1.png}
+  \includegraphics[height=5cm]{fig2_2.png}
+  \caption{Results for experiment 2 from \cite{DBLP:journals/corr/KollaJG16}.}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[height=5cm]{fig2_1_ours.png}
+  \includegraphics[height=5cm]{fig2_2_ours.png}
+  \caption{Our results for experiment 2.}
+\end{figure}
+
+\subsubsection{Experiment 3}
+
+Performance comparison of UCB-Network and FYL policies on various star networks: 2 arms, Bernoulli rewards with means $0.5$ and $0.7$.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[height=5cm]{fig3_1.png}
+  \includegraphics[height=5cm]{fig3_2.png}
+  \caption{Results for experiment 3 from \cite{DBLP:journals/corr/KollaJG16}.}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[height=5cm]{fig3_1_ours.png}
+  \includegraphics[height=5cm]{fig3_2_ours.png}
+  \caption{Our results for experiment 3.}
+\end{figure}
 
 \subsection{Distributed star network}
 
@@ -126,24 +185,6 @@ person. That is, use ``In the previous work of Jones et al.\ [4],'' not ``In our
 previous work [4].'' If you cite your other papers that are not widely available
 (e.g., a journal paper under review), use anonymous author names in the
 citation, e.g., an author of the form ``A.\ Anonymous.''
-
-\subsection{Figures}
-
-\begin{figure}
-  \centering
-  \fbox{\rule[-.5cm]{0cm}{4cm} \rule[-.5cm]{4cm}{0cm}}
-  \caption{Sample figure caption.}
-\end{figure}
-
-All artwork must be neat, clean, and legible. Lines should be dark enough for
-purposes of reproduction. The figure number and caption always appear after the
-figure. Place one line space before the figure caption and one line space after
-the figure. The figure caption should be lower case (except for first word and
-proper nouns); figures are numbered consecutively.
-
-You may use color figures.  However, it is best for the figure captions and the
-paper body to be legible if the paper is printed in either black/white or in
-color.
 
 \subsection{Tables}
 

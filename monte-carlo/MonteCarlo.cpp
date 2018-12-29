@@ -12,11 +12,10 @@ namespace fs = std::filesystem;
 const bool USE_MULTI_THREADING = true;
 
 
-void MonteCarlo::simulate(IPolicy *policy, const std::string &fileName, const int seed) {
+void MonteCarlo::simulate(IPolicy *policy, const std::string &fileName, time_t seed) {
     std::vector<double> rewards(horizon, 0);
     std::vector<unsigned long> bestActionPlayed(horizon, 0);
-    std::default_random_engine generator;
-    generator.seed(seed);
+    RNG generator(seed);
 
     auto start = std::chrono::high_resolution_clock::now();
 
@@ -25,7 +24,7 @@ void MonteCarlo::simulate(IPolicy *policy, const std::string &fileName, const in
 
 
     if (!USE_MULTI_THREADING) {
-        // FIXME Obselete code
+        // FIXME Obsolete code
         for (unsigned long i = 0; i < N; i++) {
             PolicyResult policyResult = policy->run(generator, horizon);
             std::vector<double> rewardsSample = policyResult.rewardsOverTime();

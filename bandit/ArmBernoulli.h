@@ -11,7 +11,7 @@ public:
         this->mean = p;
     }
 
-    virtual double sample(std::default_random_engine &generator) override {
+    virtual double sample(RNG &generator) override {
         return distribution(generator);
     }
 };

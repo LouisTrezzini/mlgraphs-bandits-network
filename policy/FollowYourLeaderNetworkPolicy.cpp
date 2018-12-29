@@ -19,9 +19,7 @@ struct UnproperSetOfLeadersException : public std::exception
     }
 };
 
-PolicyResult FollowYourLeaderNetworkPolicy::run(
-        std::default_random_engine &generator, unsigned long horizon) {
-
+PolicyResult FollowYourLeaderNetworkPolicy::run(RNG &generator, unsigned long horizon) {
     auto bandit = this->getBanditNetwork()->getBandit();
     auto network = this->getBanditNetwork()->getNetwork();
     auto K = bandit->getK();
