@@ -4,7 +4,7 @@
 
 #include <random>
 
-typedef std::mt19937_64 RNG;
+typedef std::default_random_engine RNG;
 
 
 class IArm {

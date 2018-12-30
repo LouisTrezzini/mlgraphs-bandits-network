@@ -63,7 +63,7 @@ int main(int argc, char *argv[]) {
             IPolicy *policyFD = new UCBNetworkPolicy(&banditNetworkFD);
             IPolicy *policyCircular = new UCBNetworkPolicy(&banditNetworkCircular);
 
-            MonteCarlo monte_carlo_simulator(100, 100000);
+            MonteCarlo monte_carlo_simulator(1000, 100000);
 
             std::cout << "UCB policy star network" << std::endl;
             monte_carlo_simulator.simulate(policyStar, "../experiment-1/UCBStar.txt");
@@ -112,7 +112,7 @@ int main(int argc, char *argv[]) {
             IPolicy *policyFD = new UCBNetworkPolicy(&banditNetworkFD);
             IPolicy *policyCircular = new UCBNetworkPolicy(&banditNetworkCircular);
 
-            MonteCarlo monte_carlo_simulator(100, 100000);
+            MonteCarlo monte_carlo_simulator(1000, 100000);
 
             std::cout << "UCB policy star network" << std::endl;
             monte_carlo_simulator.simulate(policyStar, "../experiment-2/UCBStar.txt");
@@ -153,7 +153,7 @@ int main(int argc, char *argv[]) {
             IPolicy *policyFYL350 = new FollowYourLeaderNetworkPolicy(&banditNetwork350, leaders);
             IPolicy *policyUCB350 = new UCBNetworkPolicy(&banditNetwork350);
 
-            MonteCarlo monte_carlo_simulator(100, 100000);
+            MonteCarlo monte_carlo_simulator(1000, 100000);
 
             std::cout << "Follow your leader policy, star graph with 25 nodes" << std::endl;
             monte_carlo_simulator.simulate(policyFYL25, "../experiment-3/FYL25.txt", 0);
