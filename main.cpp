@@ -8,13 +8,14 @@
 #include "bandit/ArmBernoulli.h"
 #include "policy/UCBNetworkPolicy.h"
 #include "policy/FollowYourLeaderNetworkPolicy.h"
+#include "policy/FollowBestInformedPolicy.h"
 #include "util/GraphViz.h"
 #include "monte-carlo/MonteCarlo.h"
 
 
 int main(int argc, char *argv[]) {
 
-    int mode = 3;
+    int mode = 4;
     if (argc >= 2) mode = atoi(argv[1]);
     switch (mode) {
 
@@ -173,6 +174,37 @@ int main(int argc, char *argv[]) {
             monte_carlo_simulator.simulate(policyFYL350, "../experiment-3/FYL350.txt", 0);
             std::cout << "UCB, star graph with 350 nodes" << std::endl;
             monte_carlo_simulator.simulate(policyUCB350, "../experiment-3/UCB350.txt", 0);
+
+            return 0;
+        }
+
+        // Experiment 4
+        case 4: {
+            unsigned long numberOfStars = 3;
+            std::vector<unsigned long> numberOfChildren{3, 3, 30};
+            Network fcstars = NetworkFactory::createFullyConnectedStarsGraph(numberOfStars, numberOfChildren);
+            GraphViz::write(fcstars, "network.graphviz");
+
+
+            std::vector<IArm *> arms = {
+                    new ArmBernoulli(0.5),
+                    new ArmBernoulli(0.7),
+            };
+            const Bandit MAB(arms);
+            const BanditNetwork banditNetwork(&MAB, &fcstars);
+
+            auto leaders = NetworkFactory::createFullyConnectedStarsGraphLeaders(numberOfStars, numberOfChildren);
+            IPolicy *policyFYL = new FollowYourLeaderNetworkPolicy(&banditNetwork, leaders);
+            IPolicy *policyFBI = new FollowBestInformedPolicy(&banditNetwork);
+
+
+
+            MonteCarlo monte_carlo_simulator(100, 100000);
+
+            std::cout << "Follow best informed policy, 3 stars graph with fully connected leaders" << std::endl;
+            monte_carlo_simulator.simulate(policyFBI, "../experiment-4/FBI.txt", 0);
+            std::cout << "Follow your leader policy, 3 stars graph with fully connected leaders" << std::endl;
+            monte_carlo_simulator.simulate(policyFYL, "../experiment-4/FYL.txt", 0);
 
             return 0;
         }

@@ -85,11 +85,47 @@ public:
         return g;
     }
 
+    static Network createFullyConnectedStarsGraph(unsigned long numberOfStars, std::vector<unsigned long> numberOfChildren) {
+        std::vector<Edge> edges;
+
+        for (unsigned long i = 0; i < numberOfStars; i++) {
+            for (unsigned long j = 0; j < i; j++) {
+                edges.emplace_back(i, j);
+            }
+        }
+
+        unsigned long counter = numberOfStars ;
+        for (unsigned long i = 0; i < numberOfStars; i++) {
+            for (unsigned long j = 0; j < numberOfChildren[i]; j ++) {
+                edges.emplace_back(i, counter);
+                counter += 1;
+            }
+        }
+
+        Network g(counter, edges);
+
+        return g;
+    }
+
+
     static std::unordered_map<unsigned long, unsigned long> createStarGraphLeaders(unsigned long N) {
         std::unordered_map<unsigned long, unsigned long> leaders;
 
         for(unsigned long i = 1; i < N; i++){
             leaders[i] = 0;
+        }
+
+        return leaders;
+    }
+
+    static std::unordered_map<unsigned long, unsigned long> createFullyConnectedStarsGraphLeaders(unsigned long numberOfStars, std::vector<unsigned long> numberOfChildren) {
+        std::unordered_map<unsigned long, unsigned long> leaders;
+
+        unsigned long counter = numberOfStars;
+        for(unsigned long i = 0; i < numberOfChildren.size(); i++){
+            for(unsigned long j = 0; j < numberOfChildren[i]; j ++) {
+                leaders[counter] = i;
+            }
         }
 
         return leaders;

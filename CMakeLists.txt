@@ -29,7 +29,7 @@ set(UTILS_FILES
         util/ThreadSafeQueue.h)
 
 
-set(SOURCE_FILES ${BANDIT_FILES} ${NETWORK_FILES} ${POLICY_FILES} ${UTILS_FILES} )
+set(SOURCE_FILES ${BANDIT_FILES} ${NETWORK_FILES} ${POLICY_FILES} ${UTILS_FILES} policy/FollowBestInformedPolicy.h policy/FollowBestInformedPolicy.cpp)
 
 add_executable(mlgraphs-bandits-network main.cpp ${SOURCE_FILES})
 target_link_libraries(mlgraphs-bandits-network pthread)
