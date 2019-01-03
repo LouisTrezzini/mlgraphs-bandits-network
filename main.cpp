@@ -145,15 +145,19 @@ int main(int argc, char *argv[]) {
             const BanditNetwork banditNetwork100(&MAB, &star2);
             const BanditNetwork banditNetwork350(&MAB, &star3);
 
-            const std::unordered_set<int> leaders = {0};
-            IPolicy *policyFYL25 = new FollowYourLeaderNetworkPolicy(&banditNetwork25, leaders);
+            auto leaders25 = NetworkFactory::createStarGraphLeaders(25);
+            IPolicy *policyFYL25 = new FollowYourLeaderNetworkPolicy(&banditNetwork25, leaders25);
             IPolicy *policyUCB25 = new UCBNetworkPolicy(&banditNetwork25);
-            IPolicy *policyFYL100 = new FollowYourLeaderNetworkPolicy(&banditNetwork100, leaders);
+
+            auto leaders100 = NetworkFactory::createStarGraphLeaders(100);
+            IPolicy *policyFYL100 = new FollowYourLeaderNetworkPolicy(&banditNetwork100, leaders100);
             IPolicy *policyUCB100 = new UCBNetworkPolicy(&banditNetwork100);
-            IPolicy *policyFYL350 = new FollowYourLeaderNetworkPolicy(&banditNetwork350, leaders);
+
+            auto leaders350 = NetworkFactory::createStarGraphLeaders(350);
+            IPolicy *policyFYL350 = new FollowYourLeaderNetworkPolicy(&banditNetwork350, leaders350);
             IPolicy *policyUCB350 = new UCBNetworkPolicy(&banditNetwork350);
 
-            MonteCarlo monte_carlo_simulator(1000, 100000);
+            MonteCarlo monte_carlo_simulator(100, 100000);
 
             std::cout << "Follow your leader policy, star graph with 25 nodes" << std::endl;
             monte_carlo_simulator.simulate(policyFYL25, "../experiment-3/FYL25.txt", 0);

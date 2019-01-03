@@ -4,10 +4,10 @@
 #include "IPolicy.h"
 
 class FollowYourLeaderNetworkPolicy : public IPolicy {
-    const std::unordered_set<int> leaders;
+    const std::unordered_map<unsigned long, unsigned long> leaders;
 
 public:
-    explicit FollowYourLeaderNetworkPolicy(const BanditNetwork *banditNetwork, const std::unordered_set<int> &leaders) : IPolicy(banditNetwork), leaders(leaders) {}
+    explicit FollowYourLeaderNetworkPolicy(const BanditNetwork *banditNetwork, const std::unordered_map<unsigned long, unsigned long> &leaders) : IPolicy(banditNetwork), leaders(leaders) {}
 
     PolicyResult run(RNG &generator, unsigned long horizon) override;
 

@@ -84,6 +84,16 @@ public:
 
         return g;
     }
+
+    static std::unordered_map<unsigned long, unsigned long> createStarGraphLeaders(unsigned long N) {
+        std::unordered_map<unsigned long, unsigned long> leaders;
+
+        for(unsigned long i = 1; i < N; i++){
+            leaders[i] = 0;
+        }
+
+        return leaders;
+    }
 };
 
 

@@ -12,9 +12,8 @@
 using namespace boost::numeric::ublas;
 
 
-struct UnproperSetOfLeadersException : public std::exception
-{
-    const char * what () const noexcept {
+struct UnproperSetOfLeadersException : public std::exception {
+    const char *what() const noexcept {
         return "The set of leaders is not compatible with the graph";
     }
 };
@@ -31,8 +30,6 @@ PolicyResult FollowYourLeaderNetworkPolicy::run(RNG &generator, unsigned long ho
     std::vector<matrix<double>> allRewards;
     std::vector<matrix<unsigned long>> allActions;
 
-
-    // FIXME We could make a search on neighbours and leaders only once
     for (unsigned long t = 0; t < horizon; t++) {
         matrix<unsigned long> T_next(T);
         matrix<double> X_next(X);
@@ -41,33 +38,24 @@ PolicyResult FollowYourLeaderNetworkPolicy::run(RNG &generator, unsigned long ho
         for (auto userIdx : network->getVertices()) {
             unsigned long selectedArmIdx;
 
-            if (leaders.find(userIdx) != leaders.end()) {
+            // It's a leader
+            if (leaders.find(userIdx) == leaders.end()) {
                 if (t < K) {
                     selectedArmIdx = t;
-                }
-                else {
+                } else {
                     selectedArmIdx = UCBNetworkPolicy::argmaxUCB(userIdx, network, t, T, X);
                 }
-            }
-            else {
+            } else {
+                // First round: take a random action
                 if (t == 0) {
                     std::uniform_int_distribution<unsigned long> dist(0, K - 1);
                     unsigned long randomArmIdx = dist(generator);
 
                     selectedArmIdx = randomArmIdx;
                 }
+                // Follow Your Leader
                 else {
-                    bool found = false;
-                    for (auto neighborIdx : network->getNeighbors(userIdx)) {
-                        if (leaders.find(neighborIdx) != leaders.end()) {
-                            selectedArmIdx = actions[neighborIdx];
-                            found = true;
-                            break;
-                        }
-                    }
-                    if (!found) {
-                        throw UnproperSetOfLeadersException();
-                    }
+                    selectedArmIdx = actions[leaders.at(userIdx)];
                 }
             }
 
