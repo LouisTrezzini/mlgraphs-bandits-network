@@ -17,10 +17,14 @@ set(NETWORK_FILES
 
 set(POLICY_FILES
         policy/IPolicy.h
-        policy/UCBNetworkPolicy.cpp policy/UCBNetworkPolicy.h
+        policy/UCBNetworkPolicy.cpp
+        policy/UCBNetworkPolicy.h
         policy/FollowYourLeaderNetworkPolicy.h
         policy/FollowYourLeaderNetworkPolicy.cpp
-        monte-carlo/MonteCarlo.h monte-carlo/MonteCarlo.cpp)
+        monte-carlo/MonteCarlo.h
+        monte-carlo/MonteCarlo.cpp
+        policy/FollowBestInformedPolicy.h
+        policy/FollowBestInformedPolicy.cpp)
 set(UTILS_FILES
         util/Statistics.cpp
         util/Statistics.h
@@ -29,7 +33,7 @@ set(UTILS_FILES
         util/ThreadSafeQueue.h)
 
 
-set(SOURCE_FILES ${BANDIT_FILES} ${NETWORK_FILES} ${POLICY_FILES} ${UTILS_FILES} policy/FollowBestInformedPolicy.h policy/FollowBestInformedPolicy.cpp)
+set(SOURCE_FILES ${BANDIT_FILES} ${NETWORK_FILES} ${POLICY_FILES} ${UTILS_FILES})
 
 add_executable(mlgraphs-bandits-network main.cpp ${SOURCE_FILES})
 target_link_libraries(mlgraphs-bandits-network pthread)

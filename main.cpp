@@ -197,8 +197,6 @@ int main(int argc, char *argv[]) {
             IPolicy *policyFYL = new FollowYourLeaderNetworkPolicy(&banditNetwork, leaders);
             IPolicy *policyFBI = new FollowBestInformedPolicy(&banditNetwork);
 
-
-
             MonteCarlo monte_carlo_simulator(100, 100000);
 
             std::cout << "Follow best informed policy, 3 stars graph with fully connected leaders" << std::endl;

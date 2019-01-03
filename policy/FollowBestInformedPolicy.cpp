@@ -11,14 +11,14 @@
 using namespace boost::numeric::ublas;
 
 struct InformedNeighbor {
-    double long neighborIdx;
-    double long numberOfInformation;
+    unsigned long neighborIdx;
+    unsigned long numberOfInformation;
 };
 
 InformedNeighbor findBestInformedNeighbor(unsigned long u, const Network *network, const vector<unsigned long> & informationAtDisposalForLastAction ) {
-    InformedNeighbor bestInformedNeighbor;
-    bestInformedNeighbor.neighborIdx = -1;
-    bestInformedNeighbor.numberOfInformation = -1;
+    InformedNeighbor bestInformedNeighbor{};
+    bestInformedNeighbor.neighborIdx = network->getNeighbors(u)[0];
+    bestInformedNeighbor.numberOfInformation = informationAtDisposalForLastAction(bestInformedNeighbor.neighborIdx);
 
     for (auto neighborIdx: network->getNeighbors(u)) {
         if (informationAtDisposalForLastAction(neighborIdx) > bestInformedNeighbor.numberOfInformation) {
@@ -30,10 +30,12 @@ InformedNeighbor findBestInformedNeighbor(unsigned long u, const Network *networ
     return bestInformedNeighbor;
 }
 
-unsigned long numberOfSamplesAtDisposal(unsigned long u, const Network *network, const matrix<unsigned long> & X) {
-    double numberOfSamples = 0;
-    for (unsigned long i = 1; i < X.size2(); i++) {
-        numberOfSamples += X(u, i);
+unsigned long numberOfSamplesAtDisposal(unsigned long u, const Network *network, const matrix<unsigned long> &T) {
+    unsigned long numberOfSamples = 0;
+    for (auto neighborIdx: network->getNeighbors(u)) {
+        for (unsigned long i = 0; i < T.size2(); i++) {
+            numberOfSamples += T(u, i);
+        }
     }
 
     return numberOfSamples;
@@ -50,6 +52,7 @@ PolicyResult FollowBestInformedPolicy::run(RNG &generator, unsigned long horizon
     matrix<double> X = zero_matrix(network->vertex_set().size(), K);
     vector<unsigned long> informationAtDisposalForLastAction(network->vertex_set().size(), 0);
     std::vector<unsigned long> actions(network->vertex_set().size());
+
     std::vector<matrix<double>> allRewards;
     std::vector<matrix<unsigned long>> allActions;
 
@@ -61,19 +64,23 @@ PolicyResult FollowBestInformedPolicy::run(RNG &generator, unsigned long horizon
 
         for (auto userIdx : network->getVertices()) {
             unsigned long selectedArmIdx;
-            InformedNeighbor bestInformedNeighbor = findBestInformedNeighbor(userIdx, network, informationAtDisposalForLastAction);
-            double numberOfSamples = numberOfSamplesAtDisposal(userIdx, network, X);
+            InformedNeighbor bestInformedNeighbor = findBestInformedNeighbor(
+                    userIdx,
+                    network,
+                    informationAtDisposalForLastAction
+            );
+            unsigned long numberOfSamples = numberOfSamplesAtDisposal(userIdx, network, T);
 
             // It's a leader
             if (bestInformedNeighbor.numberOfInformation <= numberOfSamples) {
                 if (t < K) {
                     selectedArmIdx = t;
-                    informationAtDisposalForLastAction_next[userIdx] = 0;
                 } else {
                     selectedArmIdx = UCBNetworkPolicy::argmaxUCB(userIdx, network, t, T, X);
-                    informationAtDisposalForLastAction_next[userIdx] = numberOfSamples;
                 }
-            } else {
+                informationAtDisposalForLastAction_next[userIdx] = numberOfSamples;
+            }
+            else {
                 // First round: take a random action
                 if (t == 0) {
                     std::uniform_int_distribution<unsigned long> dist(0, K - 1);
