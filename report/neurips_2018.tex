@@ -27,6 +27,18 @@
 \usepackage{graphicx}
 \usepackage{float}
 
+% \usepackage{verbatim}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}
+\newtheorem{lemma}{Lemma}
+\newtheorem{remark}{Remark}
+
+\usepackage{xcolor}
+
 \title{Bandit networks}
 
 % The \author macro works with any number of authors. There are two commands
@@ -59,20 +71,153 @@
 \end{abstract}
 
 \section{Introduction}
+This project is a review of paper \cite{DBLP:journals/corr/KollaJG16}. As such, we will only succinctly present their model and their main results, and refer to additional results in \cite{DBLP:journals/corr/KollaJG16} when necessary.
 
+The interesting part of bandit networks is that we consider multiple agents playing the same multi-armed bandit (MAB) problem. Instead of playing independently, they can be connected through a graph and share their knowledge of the game (actions taken and resulting rewards) with their neighbors. Moreover, they can decide to play very diverse policies, which can be much more than simple extensions of UCB or Thomson-Sampling to the network-setting. These collaborative policies can really profit of the structure of the graph considered and even adapt to the locally available information.
 
-\section{...}
+\section{The model}
 
+We use the definitions and notations from \cite{DBLP:journals/corr/KollaJG16}. Let's restate them quickly.
 
-\section{Theoretical contributions}
+\subsection{Single-agent stochastic multi-armed bandit (MAB) problem}
+Let $\mathcal{K} = \lbrace 1, 2,\dots, K \rbrace$ be the set of arms available to the agent. Each arm is associated with a distribution $\mathcal{P}_k$, and let $\mu_k$ be the corresponding mean, unknown to the agent. Let $n$ be the time horizon or the total number of rounds. In each round $t$, the agent chooses an arm, for which he receives a reward, an i.i.d. sample drawn from the chosen arm's distribution. The agent can use the knowledge of the chosen arms and the corresponding rewards upto round $(t-1)$ to select an arm in round $t.$ The goal of the agent is to maximize the cumulative expected reward up to round $n$.
 
-%FIXME
+\subsection{Multi-agent stochastic multi-armed bandit (MAB) problem}
+We consider a set of users $V$ connected by an undirected fixed network $G=(V,E)$, with $| V | = m$. Assume that each user is learning the same stochastic MAB problem i.e., faces a choice in each time from among the same set of arms $\mathcal{K}$. In the $t^{th}$ round, each user $v$ chooses an arm, denoted by $a^v(t) \in \mathcal{K}$, and receives a reward, denoted by $X^v_{a^v(t)}(t)$, an i.i.d. sample drawn from $\mathcal{P}_{a^v(t)}$.
+In the  stochastic MAB problem set-up, for a given user $v$, the rewards from arm $i$, denoted by $\{X^v_i(t): t = 1, 2, \ldots \}$, are i.i.d. across rounds. Moreover, the rewards from distinct arms $i$ and $j$, $X^v_i(t)$, $X^v_j(s)$, are independent. If multiple users choose the same action in a certain round, then each of them gets an independent reward sample drawn from the chosen arm's distribution. We use the subscripts $i$, $v$ and $t$ for arms, nodes and time respectively. The information structure available to each user is as follows. A user $v$ can observe the actions and the respective rewards of itself and its one hop neighbors in round $t$, before deciding the action for round $(t+1)$.
+
+The policy $\Phi^v$ followed by a user prescribes actions at each time $t,$ $\Phi^v(t): H^v(t) \rightarrow \mathcal{K},$ where $H^v(t)$ is the information available with the user till round $t.$ A policy of the network $G,$ denoted by $\Phi,$ comprises of the policies pertaining to all users in $G.$ The performance of a policy is quantified by a real-valued random variable, called \textit{regret}, defined as follows. The regret incurred by user $v$ for using the policy $\Phi^v$ up to round $n$ is defined as,
+\begin{equation*}
+\label{eq:2.1}
+R^v_{\Phi}(n) = \sum\limits_{t=1}^n \left( \mu^* - \mu_{a^v(t)} \right)  = n \mu^* - \sum\limits_{t=1}^n \mu_{a^v(t)},
+\end{equation*}
+where $a^v(t)$ is the action chosen by the policy $\Phi^v$ at time $t$, and $\mu^* = \max\limits_{1 \leq i \leq K} \mu_i$. We refer to the arm with the highest expected reward as the optimal arm. The regret of the entire network $G$ under the policy $\Phi$ is denoted by $R^G_{\Phi}(n)$, and is defined as the sum of the regrets of all users in $G$. The expected regret of the network is given by:
+\begin{equation}
+\label{eq:2.3}
+\mathbb{E} [ R^G_{\Phi}(n) ] = \sum \limits_{v \in V} \sum\limits_{i=1}^K \Delta_i \mathbb{E}  [ T_i^v(n) ],
+\end{equation}
+where $\Delta_i = \mu^* - \mu_i$, and $T_i^v(n)$ is the number of times arm $i$ has been chosen by $\Phi^v$ up to round $n$. We omit $\Phi$ from the regret notation, whenever the policy can be understood from the context. Our goal is to devise learning policies in order to minimise the expected regret of the network.
+
+Let $\mathcal{N}(v)$ denote the set consisting of the node $v$ and its one-hop neighbours. Let $m^v_i(t)$ be the number of times arm $i$ has been chosen by node $v$ and its one-hop neighbors till round $t$, and  $\hat{\mu}_{m_i^v(t)}$ be the average of the corresponding reward samples. These are given as:
+\begin{align*}
+m^v_i(t)  &= \sum\limits_{u \in \mathcal{N}(v)} T_i^u(t) \\
+\hat{\mu}_{m_i^v(t)} &=\frac{1}{{m_i^v(t)}} \sum\limits_{u \in \mathcal{N}(v)} \sum\limits_{k=1}^{t} X_{a^u(k)}^u(k) \mathbb{I} \lbrace a^u(k) = i \rbrace,
+\end{align*}
+where $\mathbb{I}$ denotes the indicator function. We use $m^G_i(t)$ to denote the number of times arm $i$ has been chosen by all nodes in the network till round $t$.
+
+\section{Policies}
+
+\subsection{UCB-Network}
+
+They propose the natural extension of the well-known single agent policy UCB to the network-setting, that they call "UCB-user". When each user in the network follows the UCB-user policy, the network policy is called UCB-Network and is outlined in Algorithm~\ref{alg:UCB-Network}.
+\begin{algorithm}[htb]
+   \caption{Upper-Confidence-Bound-Network (UCB-Network)}
+   \label{alg:UCB-Network}
+\begin{algorithmic}
+%\STATE{\bfseries Input: Graph $G$}
+   \STATE {Each user in $G$ follows UCB-user policy}
+   \STATE{\bfseries UCB-user policy for a user $v$:}
+   \STATE{\bfseries Initialization:} For $1 \leq t \leq K$
+   \STATE{- play arm $t$}
+   \STATE{\bfseries Loop:} For $K \leq t \leq n$
+   \STATE - $a^v(t+1) = \underset{j}{\operatorname{argmax}} \, \, \hat{\mu}_{m_j^v(t)} + \sqrt{\frac{2 \ln t}{m_j^v(t)}}$
+\end{algorithmic}
+\end{algorithm}
+
+The following theorem presents an upper bound on the expected regret of a generic network, under the UCB-Network policy.
+\begin{theorem}
+\label{Thm:3.1}
+Assume that the network $G$ follows the UCB-Network policy to learn a stochastic MAB problem with $K$ arms. Further, assume that the rewards lie in $[0,1]$. Then,
+\begin{itemize}
+\item[(i)] The expected total regret of $G$ is upper bounded as:
+\begin{equation*}
+  \label{eq:3.1}
+  \mathbb{E} \left[ R^G(n) \right] \leq b + \sum\limits_{i:\mu_i < \mu^*} C_G {\color{red}\frac{8 \ln n}{\Delta_i}},
+\end{equation*}
+where $\Delta_i = \mu^* - \mu_i$, $\beta \in (0.25,1)$, $b~=~m \left[ \frac{2}{4\beta -1} + \frac{2}{(4\beta-1)^2 \ln(1/\beta)} \right] \left( \sum\limits_{j=1}^K \Delta_j \right),$ and
+$C_G$ is a network dependent parameter, defined as follows.
+\item[(ii)] Let $\gamma_k = \min \lbrace t \in \lbrace 1, \dots, n \rbrace : \vert \lbrace v \in V : m^v_i(t) \geq l_i = \frac{8 \ln n}{\Delta_i^2} \rbrace \vert \geq k \rbrace$ denote the smallest time index when at least $k$ nodes have access to at least $l_i$ samples of arm $i$. Let $\eta_k$ be the index of the `latest' node to acquire  $l_i$ samples of arm $i$ at $\gamma_k,$ such that $\eta_k \neq \eta_{k'}$ for $1 \leq k, k' \leq m$. Define $z_k = T_i(\gamma_k) := \left( T^1_i(\gamma_k), \dots, T^m_i(\gamma_k) \right)$, which contains the arm $i$ counts of all nodes at time $\gamma_k$. Then, $C_G l_i$ is the solution of the following optimisation problem:
+\begin{equation}
+\label{OptimizationProblem11}
+\begin{aligned}
+& \max \hspace{2mm} \Vert z_m \Vert_1 \\
+& \text{s.t $\exists$ a sequence $\lbrace z_k \rbrace_{k=1}^m$} \\
+& z_j(\eta_k) = z_k(\eta_k) \hspace{2mm} \forall j \geq k\\
+& \langle z_k, A(\eta_k,:) \rangle \geq l_i, \hspace{2mm} 1\leq k \leq m
+\end{aligned}
+\end{equation}
+\end{itemize}
+\end{theorem}
+
+\begin{remark}
+  We propose the result in red, which is a correction of the result from \cite{DBLP:journals/corr/KollaJG16}. After checking the proof, we think that we can deduce this tighter upper bound on the expected total regret of $G$.
+\end{remark}
+
+\begin{corollary}
+  For an $m$-node star network:
+  \begin{equation}
+    \mathbb{E}[R^G(n)] \leq b + (m - 1) \sum\limits_{i:\mu_i < \mu^*} {\color{red} \frac{8 \ln n}{\Delta_i}}
+  \end{equation}
+\end{corollary}
+
+\subsection{Follow Your Leader (FYL)}
+They present a second network policy called Follow Your Leader (FYL) for a generic $m$-node network. The policy is based on exploiting high-degree hubs in the graph; for this purpose, we need to define notions of dominating sets and dominating set partitions.
+
+\textbf{Definition 3} [Dominating set of a graph] A \textit{dominating set} $D$ of a graph $G = (V,E)$ is a subset of $V$ such that every node in $V\setminus D$ is adjacent to atleast one of the nodes in $D$.
+
+\textbf{Definition 4} [Dominating set partition of a graph]
+Let $D$ be a dominating set of $G$. A dominating set partition based on $D$ is obtained by partitioning $V$ into $|D|$ components such that each component contains a node in $D$ and a subset of its one hop neighbors.
+
+The FYL policy for an $m$-node generic network is outlined in Algorithm~\ref{alg:FYL}. Under the FYL policy, all nodes in the dominating set are called {\em leaders} and all other nodes as {\em followers}; the follower nodes follow their leaders while choosing an action in a round.
+The following theorem presents an upper bound on the expected regret of an $m$-node star network which employs the FYL policy.
+
+\begin{algorithm}[htb]
+   \caption{Follow Your Leader (FYL) Policy}
+   \label{alg:FYL}
+   \begin{algorithmic}
+     \STATE {\bfseries Input:} Graph $G$, a dominating set $D$ and a dominating set partition
+     \STATE{\bfseries Leader - Each node in $D$:}
+     \STATE{Follows the UCB-user policy by using the samples of itself and its neighbors}
+     \STATE{\bfseries Follower - Each node in $V\setminus D$:}
+     \STATE{In round $t=1$:}
+     \STATE{~~~~- Chooses an action randomly from $\mathcal{K}$}
+     \STATE{In round $t > 1$:}
+     \STATE{~~~~-  Chooses the action taken by the leader in its component, in the previous round $(t-1)$}
+  \end{algorithmic}
+\end{algorithm}
+
+\begin{theorem}[FYL regret bound, star networks]
+\label{Thm:5.1}
+Suppose the star network $G$ with a dominating set as the center node, follows the FYL policy to learn a stochastic MAB problem with $K$ arms. Assume that the rewards lie in $[0,1]$. Then,
+\begin{align*}
+\mathbb{E}[R^G(n)] \leq d + \sum\limits_{i:\mu_i < \mu^*}^K \frac{8 \ln n}{\Delta_i},
+\end{align*}
+where $d = \Big[ 2m - 1 + \frac{2 m}{4 \beta -1} \left( 1 + \frac{1}{(4 \beta -1) \ln (1/ \beta)} \right) \Big] \left( \sum\limits_{j=1}^K \Delta_j \right)$, $\Delta_i= \mu^* - \mu_i$ and $\beta \in (0.25,1)$.
+\end{theorem}
+
+A key insight obtained from Theorem~\ref{Thm:5.1} is that an $m$-node star network with the FYL policy incurs an expected regret that is lower by a factor $(m - 1)$, as compared to UCB-Network.
+
+\subsection{Lower bounds on the expected regret}
+
+We decided not to focus on the lower bounds on the expected regret during this review, but it's important to notice that they prove in \cite{DBLP:journals/corr/KollaJG16} that the regret upper bound under the FYL policy meets a lower bound universal to all policies. Hence, they conclude that the FYL policy is order optimal for star networks.
+
+% FIXME Moreover, they proved that the upper bound of the UCB-Network policy and the lower bound given by (9) are of the same order
+
+\section{Our theoretical contributions}
+
+%FIXME preuve du corollaire
+%FIXME preuve du corollaire pour un réseau en étoileSSSS
+
+%FIXME amélioration de FYL (adaptatif, pas besoin de calculer le dominating set)
+%FIXME preuve que l'amélioration est non-individually consistent?
 
 \newpage
 
 \section{Experimental results}
 
 \subsection{Reproducing experiments from \cite{DBLP:journals/corr/KollaJG16}}
+
+Considering this is a review project, we decided to first reproduce the experimental results from the paper.
 
 \subsubsection{Experiment 1}
 
@@ -91,6 +236,8 @@ Performance comparison of UCB-Network policy on various 10 node networks: 2 arms
   \includegraphics[height=5cm]{fig1_2_ours.png}
   \caption{Our results for experiment 1 (1000 sample paths).}
 \end{figure}
+
+We observe that we obtain exactly the same results as in \cite{DBLP:journals/corr/KollaJG16}, except for the expected regret of the network at rounds $ > 10000$. We observe a noisier
 
 \subsubsection{Experiment 2}
 
@@ -130,6 +277,7 @@ Performance comparison of UCB-Network and FYL policies on various star networks:
 
 \subsection{Distributed star network}
 
+% FIXME UCBNetwork vs FYL vs AdaptativeLeaders
 
 
 \section{Conclusion}
