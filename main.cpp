@@ -211,9 +211,9 @@ int main(int argc, char *argv[]) {
 
             const BanditNetwork starBanditNetwork(&MAB, &star);
 
-            policyFYL = new FollowYourLeaderPolicy(&fcStarsBanditNetwork, starLeaders);
-            policyFBI = new FollowBestInformedPolicy(&fcStarsBanditNetwork);
-            policyUCB = new UCBNetworkPolicy(&fcStarsBanditNetwork);
+            policyFYL = new FollowYourLeaderPolicy(&starBanditNetwork, starLeaders);
+            policyFBI = new FollowBestInformedPolicy(&starBanditNetwork);
+            policyUCB = new UCBNetworkPolicy(&starBanditNetwork);
 
             std::cout << "Follow best informed policy, 100-nodes star graph" << std::endl;
             monteCarloSimulator.simulate(policyFBI, "../experiment-4/FBI-star.txt", 0);

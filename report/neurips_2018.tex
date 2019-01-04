@@ -156,6 +156,7 @@ $C_G$ is a network dependent parameter, defined as follows.
 \end{remark}
 
 \begin{corollary}
+  \label{cor:star}
   For an $m$-node star network:
   \begin{equation}
     \mathbb{E}[R^G(n)] \leq b + (m - 1) \sum\limits_{i:\mu_i < \mu^*} {\color{red} \frac{8 \ln n}{\Delta_i}}
@@ -211,47 +212,51 @@ We decided not to focus on the lower bounds on the expected regret during this r
 
 %FIXME preuve du corollaire
 
-\subsection{Upper bound of the UCB-network policy on a multiple stars graph}
+\subsection{Upper bound on the expected regret for UCB-Network policy on a multiple stars graph}
 
-Suppose that you have the following graph that we call multiple stars graph. There are $M$ stars on the graph. Each star $j$ has $m_j$ children. The only connections between stars are made through their central nodes. These connections can be can be anything ranging from full disconnection of central nodes of the stars to full connection of the central nodes of the stars.
+Suppose that you have the following $m$-nodes graph, that we call multiple stars graph. There are $S$ stars on the graph. Each star $j$ is made of a hub and its $m_j$ children. The only connections between stars are made through their hub (central node). These connections can be can be anything ranging from full disconnection of central nodes of the stars to full connection of the central nodes of the stars.
 
-\begin{proposition}[Upper bound of the UCB-network policy on a multiple stars graph]
-  Assume that  a multiple stars graph G as defined above, follows a UCB-network policy to learn a stochastic MAB problem with K arms. Further, assume that rewards are in $[0, 1]$. Then, regardless of the connections between the central nodes of the stars, the expected total regret of G is upper bounded as :
+\begin{proposition}[Upper bound on the expected regret for UCB-Network policy on a multiple stars graph]
+  Assume that  a multiple stars graph G as defined above, follows a UCB-Network policy to learn a stochastic MAB problem with K arms. Further, assume that rewards are in $[0, 1]$. Then, regardless of the connections between the central nodes of the stars, the expected total regret of G is upper bounded as :
   \begin{align*}
-    \mathbb{E}(R^G(n)) \leq \left( \sum_{j=1}^M m_j \right) \sum_{i:\mu_i< \mu^*} \frac{8\ln(n)}{\Delta_i}  + b
+    \mathbb{E}(R^G(n)) \leq \left( m - S \right) \sum_{i:\mu_i< \mu^*} \frac{8\ln(n)}{\Delta_i}  + b
   \end{align*}
   where $\Delta_i = \mu^* - \mu_i$, $\beta \in (0.25,1)$, $b~=~m \left[ \frac{2}{4\beta -1} + \frac{2}{(4\beta-1)^2 \ln(1/\beta)} \right] \left( \sum\limits_{j=1}^K \Delta_j \right)$.
 \end{proposition}
 
+\begin{remark}
+  This result can be seen as an extension of Corollary \ref{cor:star} when $S = 1$.
+\end{remark}
+
 \begin{proof}
 
-We use Theorem 1 of \cite{DBLP:journals/corr/KollaJG16} to get the general result, and we only need to prove that for our multiple stars network G, we have that $C_G = \sum_{j=1}^m m_j$. For that, we need to solve the optimization program (2) of Theorem 1 of \cite{DBLP:journals/corr/KollaJG16}. For our network, the formulation is that $C_Gl_i$ is the solution of the following optimisation problem where A is the adjacency matrix of our graph.
+We use Theorem 1 of \cite{DBLP:journals/corr/KollaJG16} to get the general result, and we only need to prove that for our multiple stars network G, we have that $C_G = \sum_{j=1}^m m_j = m - S$. For that, we need to solve the optimization program (2) of Theorem 1 of \cite{DBLP:journals/corr/KollaJG16}. For our network, the formulation is that $C_Gl_i$ is the solution of the following optimisation problem where A is the adjacency matrix of our graph.
 
 \begin{equation*}
 \begin{aligned}
 & \underset{x}{\text{maximize}}
-&& ||z_{M + \sum_{j=1}^M m_j}||
+&& ||z_{m}||
 &&& \\
 & \text{subject to}
-&& \exists\text{ a sequence }\{z_k\}_{k=1}^{n + \sum_{j=1}^M m_j} \in \{0, l_i\}^{n + \sum_{j=1}^M m_j}
+&& \exists\text{ a sequence }\{z_k\}_{k=1}^{m} \in \{0, l_i\}^{m}
 &&& \\
 &
-&& \exists\text{ a permutation }\{\eta_k\}_{k=1}^{n + \sum_{j=1}^M m_j} \text{ of } (1, ..., n + \sum_{j=1}^M m_j)
+&& \exists\text{ a permutation }\{\eta_k\}_{k=1}^{m} \text{ of } (1, ..., m)
 &&& \\
 &
 && z_l(\eta_k) = z_k(\eta_k)
 &&& \forall l \geq k \\
 &
 && \langle z_k, A(\eta_k, :)\rangle \geq l_i
-&&& 1\leq k \leq n + \sum_{j=1}^M m_j
+&&& 1\leq k \leq m
 \end{aligned}
 \end{equation*}
 
-For a multiple-stars network, the solution of this program is $l_i \sum_{j=1}^n m_i$. This corresponds to the scenario where none of the stars centers ever chooses the sub-optimal arm $i$, and every leaf of every star chooses it $l_i$ times. It is clearly feasible because, we can have $z_{n + \sum_{j=1}^M m_j}$ be 0 for all the centers of the stars, and $l_i$ for all the leaves. Then the order of the permutation $\eta_k$ doesn't matter.
+For a multiple-stars network, the solution of this program is $l_i \sum_{j=1}^n m_i$. This corresponds to the scenario where none of the stars centers ever chooses the sub-optimal arm $i$, and every leaf of every star chooses it $l_i$ times. It is clearly feasible because, we can have $z_{m}$ be 0 for all the centers of the stars, and $l_i$ for all the leaves. Then the order of the permutation $\eta_k$ doesn't matter.
 
-Moreover, if the centers of the stars are fully disconnected, we know that $l_i \sum_{j=1}^M m_j$ is indeed the maximum of the program because we can solve it star by star as they don't interact. When there is a connection between the centers, there is more information going through the graph, and therefore, the maximum can only be lower than $l_i \sum_{j=1}^M m_j$.
+Moreover, if the centers of the stars are fully disconnected, we know that $l_i \sum_{j=1}^S m_j$ is indeed the maximum of the program because we can solve it star by star as they don't interact. When there is a connection between the centers, there is more information going through the graph, and therefore, the maximum can only be lower than $l_i \sum_{j=1}^S m_j$.
 
-Therefore, the maximum is indeed $l_i \sum_{j=1}^M m_j$, and we have $C_G = \sum_{j=1}^M m_j$.
+Therefore, the maximum is indeed $l_i \sum_{j=1}^S m_j$, and we have $C_G = \sum_{j=1}^S m_j = m - S$.
 
 \end{proof}
 
@@ -328,14 +333,17 @@ Same observation here as for experiment 1: we notice that we obtain exactly the 
 
 \subsection{Evaluating Follow Best Informed (FBI) policy}
 
-\subsubsection{Star network vs FC-stars network}
+\subsubsection{Comparison between star network and multiple stars network}
 
 Finally, we provide experimental results to demonstrate the efficiency our Follow Best Informed (FBI) policy.
+
+We show that it provides similar results as FYL for star networks, and improves the performance for general networks (here, multiple fully connected stars network, see Figure \ref{fcstars}).
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.6\linewidth]{fcstars.jpg}
-  \caption{A 29-nodes 5-FC-stars network.}
+  \caption{A 29-nodes 5-FC-stars network. It can be seen as a star network where the central hub got split into several sub-hubs.}
+  \label{fcstars}
 \end{figure}
 
 \begin{figure}[H]
@@ -345,7 +353,7 @@ Finally, we provide experimental results to demonstrate the efficiency our Follo
   \caption{Performance comparison of UCB-Network, FYL, and FBI policies on a 100-nodes star network and on the 100-nodes 5-FC-stars network: 2 arms, Bernoulli rewards with means $0.5$ and $0.7$. (1000 sample paths).}
 \end{figure}
 
-% FIXME Interprétation?
+As expected, FYL and FBI policies perform about the same on star and multiple stars networks. But the great improvement of FBI over FYL lies in its ability to naturally adapt to the graph structure. It greatly decreases expected regret for the multiple stars network, compared to FYL.
 
 \subsubsection{}
 
@@ -364,7 +372,7 @@ This gap is even larger on more pathological graph structure. Here, we compare F
   \caption{Performance comparison of FYL and FBI policies on the pathological graph structure: 2 arms, Bernoulli rewards with means $0.5$ and $0.7$. (1000 sample paths).}
 \end{figure}
 
-One issue of FYL is that it doesn't really take into account the full structure of the graph, and can only benefit from star structures. The more general the graph, the worst the policy. This comes from the fact that FYL policy relies on the dominating set (see upper bound of Theorem 6 from \cite{DBLP:journals/corr/KollaJG16}). In our example, the dominating set doesn't allow to collect the most samples, so FBI performs much better than FYL.
+One issue of FYL is that it doesn't really take into account the full structure of the graph, and can only benefit from star structures. The more general the graph, the worst the policy. This comes from the fact that FYL policy relies on the dominating set (see upper bound of Theorem 6 from \cite{DBLP:journals/corr/KollaJG16}). In our example, the dominating set doesn't allow children nodes to collect the most samples, so FBI performs much better than FYL.
 
 \section{Conclusion}
 
