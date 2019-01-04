@@ -64,19 +64,19 @@ int main(int argc, char *argv[]) {
             IPolicy *policyFD = new UCBNetworkPolicy(&banditNetworkFD);
             IPolicy *policyCircular = new UCBNetworkPolicy(&banditNetworkCircular);
 
-            MonteCarlo monte_carlo_simulator(1000, 100000);
+            MonteCarlo monteCarloSimulator(1000, 100000);
 
             std::cout << "UCB policy star network" << std::endl;
-            monte_carlo_simulator.simulate(policyStar, "../experiment-1/UCBStar.txt");
+            monteCarloSimulator.simulate(policyStar, "../experiment-1/UCBStar.txt");
             std::cout << "UCB policy FC network" << std::endl;
             // No seed is specified, so the random seed is used
-            monte_carlo_simulator.simulate(policyFC, "../experiment-1/UCBFC.txt");
+            monteCarloSimulator.simulate(policyFC, "../experiment-1/UCBFC.txt");
             std::cout << "UCB policy FD network" << std::endl;
             // No seed is specified, so the random seed is used
-            monte_carlo_simulator.simulate(policyFD, "../experiment-1/UCBFD.txt");
+            monteCarloSimulator.simulate(policyFD, "../experiment-1/UCBFD.txt");
             std::cout << "UCB policy circular network" << std::endl;
             // No seed is specified, so the random seed is used
-            monte_carlo_simulator.simulate(policyCircular, "../experiment-1/UCBCircular.txt");
+            monteCarloSimulator.simulate(policyCircular, "../experiment-1/UCBCircular.txt");
 
             return 0;
         }
@@ -113,19 +113,19 @@ int main(int argc, char *argv[]) {
             IPolicy *policyFD = new UCBNetworkPolicy(&banditNetworkFD);
             IPolicy *policyCircular = new UCBNetworkPolicy(&banditNetworkCircular);
 
-            MonteCarlo monte_carlo_simulator(1000, 100000);
+            MonteCarlo monteCarloSimulator(1000, 100000);
 
             std::cout << "UCB policy star network" << std::endl;
-            monte_carlo_simulator.simulate(policyStar, "../experiment-2/UCBStar.txt");
+            monteCarloSimulator.simulate(policyStar, "../experiment-2/UCBStar.txt");
             std::cout << "UCB policy FC network" << std::endl;
             // No seed is specified, so the random seed is used
-            monte_carlo_simulator.simulate(policyFC, "../experiment-2/UCBFC.txt");
+            monteCarloSimulator.simulate(policyFC, "../experiment-2/UCBFC.txt");
             std::cout << "UCB policy FD network" << std::endl;
             // No seed is specified, so the random seed is used
-            monte_carlo_simulator.simulate(policyFD, "../experiment-2/UCBFD.txt");
+            monteCarloSimulator.simulate(policyFD, "../experiment-2/UCBFD.txt");
             std::cout << "UCB policy circular network" << std::endl;
             // No seed is specified, so the random seed is used
-            monte_carlo_simulator.simulate(policyCircular, "../experiment-2/UCBCircular.txt");
+            monteCarloSimulator.simulate(policyCircular, "../experiment-2/UCBCircular.txt");
 
             return 0;
         }
@@ -135,7 +135,6 @@ int main(int argc, char *argv[]) {
             Network star1 = NetworkFactory::createStarGraph(25);
             Network star2 = NetworkFactory::createStarGraph(100);
             Network star3 = NetworkFactory::createStarGraph(350);
-
 
             std::vector<IArm *> arms = {
                     new ArmBernoulli(0.5),
@@ -158,54 +157,71 @@ int main(int argc, char *argv[]) {
             IPolicy *policyFYL350 = new FollowYourLeaderPolicy(&banditNetwork350, leaders350);
             IPolicy *policyUCB350 = new UCBNetworkPolicy(&banditNetwork350);
 
-            MonteCarlo monte_carlo_simulator(100, 100000);
+            MonteCarlo monteCarloSimulator(1000, 100000);
 
             std::cout << "Follow your leader policy, star graph with 25 nodes" << std::endl;
-            monte_carlo_simulator.simulate(policyFYL25, "../experiment-3/FYL25.txt", 0);
+            monteCarloSimulator.simulate(policyFYL25, "../experiment-3/FYL25.txt", 0);
             std::cout << "UCB policy, star graph with 25 nodes" << std::endl;
-            monte_carlo_simulator.simulate(policyUCB25, "../experiment-3/UCB25.txt", 0);
+            monteCarloSimulator.simulate(policyUCB25, "../experiment-3/UCB25.txt", 0);
 
             std::cout << "Follow your leader policy, star graph with 100 nodes" << std::endl;
-            monte_carlo_simulator.simulate(policyFYL100, "../experiment-3/FYL100.txt", 0);
+            monteCarloSimulator.simulate(policyFYL100, "../experiment-3/FYL100.txt", 0);
             std::cout << "UCB policy, star graph with 100 nodes" << std::endl;
-            monte_carlo_simulator.simulate(policyUCB100, "../experiment-3/UCB100.txt", 0);
+            monteCarloSimulator.simulate(policyUCB100, "../experiment-3/UCB100.txt", 0);
 
             std::cout << "Follow your leader policy, star graph with 350 nodes" << std::endl;
-            monte_carlo_simulator.simulate(policyFYL350, "../experiment-3/FYL350.txt", 0);
+            monteCarloSimulator.simulate(policyFYL350, "../experiment-3/FYL350.txt", 0);
             std::cout << "UCB, star graph with 350 nodes" << std::endl;
-            monte_carlo_simulator.simulate(policyUCB350, "../experiment-3/UCB350.txt", 0);
+            monteCarloSimulator.simulate(policyUCB350, "../experiment-3/UCB350.txt", 0);
 
             return 0;
         }
 
         // Experiment 4
         case 4: {
-            unsigned long numberOfStars = 5;
-            std::vector<unsigned long> numberOfChildren{12, 12, 12, 12, 48};
-            Network fcstars = NetworkFactory::createFullyConnectedStarsGraph(numberOfStars, numberOfChildren);
-            GraphViz::write(fcstars, "network.graphviz");
-
-
             std::vector<IArm *> arms = {
                     new ArmBernoulli(0.5),
                     new ArmBernoulli(0.7),
             };
             const Bandit MAB(arms);
-            const BanditNetwork banditNetwork(&MAB, &fcstars);
 
-            auto leaders = NetworkFactory::createFullyConnectedStarsGraphLeaders(numberOfStars, numberOfChildren);
-            IPolicy *policyFYL = new FollowYourLeaderPolicy(&banditNetwork, leaders);
-            IPolicy *policyFBI = new FollowBestInformedPolicy(&banditNetwork);
-            IPolicy *policyUCB = new UCBNetworkPolicy(&banditNetwork);
+            unsigned long numberOfStars = 5;
+            std::vector<unsigned long> numberOfChildren{12, 12, 12, 12, 48};
+            Network fcStars = NetworkFactory::createFullyConnectedStarsGraph(numberOfStars, numberOfChildren);
+            auto fcStarsLeaders = NetworkFactory::createFullyConnectedStarsGraphLeaders(numberOfStars, numberOfChildren);
+            GraphViz::write(fcStars, "network.graphviz");
 
-            MonteCarlo monte_carlo_simulator(100, 100000);
+            const BanditNetwork fcStarsBanditNetwork(&MAB, &fcStars);
+
+            IPolicy *policyFYL = new FollowYourLeaderPolicy(&fcStarsBanditNetwork, fcStarsLeaders);
+            IPolicy *policyFBI = new FollowBestInformedPolicy(&fcStarsBanditNetwork);
+            IPolicy *policyUCB = new UCBNetworkPolicy(&fcStarsBanditNetwork);
+
+            MonteCarlo monteCarloSimulator(1000, 100000);
 
             std::cout << "Follow best informed policy, 5 stars graph with fully connected leaders" << std::endl;
-            monte_carlo_simulator.simulate(policyFBI, "../experiment-4/FBI.txt", 0);
+            monteCarloSimulator.simulate(policyFBI, "../experiment-4/FBI.txt", 0);
             std::cout << "Follow your leader policy, 5 stars graph with fully connected leaders" << std::endl;
-            monte_carlo_simulator.simulate(policyFYL, "../experiment-4/FYL.txt", 0);
+            monteCarloSimulator.simulate(policyFYL, "../experiment-4/FYL.txt", 0);
             std::cout << "UCB-Network policy, 5 stars graph with fully connected leaders" << std::endl;
-            monte_carlo_simulator.simulate(policyUCB, "../experiment-4/UCB.txt", 0);
+            monteCarloSimulator.simulate(policyUCB, "../experiment-4/UCB.txt", 0);
+
+            const Network star = NetworkFactory::createStarGraph(100);
+            auto starLeaders = NetworkFactory::createStarGraphLeaders(100);
+
+            const BanditNetwork starBanditNetwork(&MAB, &star);
+
+            policyFYL = new FollowYourLeaderPolicy(&fcStarsBanditNetwork, starLeaders);
+            policyFBI = new FollowBestInformedPolicy(&fcStarsBanditNetwork);
+            policyUCB = new UCBNetworkPolicy(&fcStarsBanditNetwork);
+
+            std::cout << "Follow best informed policy, 100-nodes star graph" << std::endl;
+            monteCarloSimulator.simulate(policyFBI, "../experiment-4/FBI-star.txt", 0);
+            std::cout << "Follow your leader policy, 100-nodes star graph" << std::endl;
+            monteCarloSimulator.simulate(policyFYL, "../experiment-4/FYL-star.txt", 0);
+            std::cout << "UCB-Network policy, 100-nodes star graph" << std::endl;
+            monteCarloSimulator.simulate(policyUCB, "../experiment-4/UCB-star.txt", 0);
+
 
             return 0;
         }

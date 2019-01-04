@@ -237,7 +237,7 @@ Performance comparison of UCB-Network policy on various 10 node networks: 2 arms
   \caption{Our results for experiment 1 (1000 sample paths).}
 \end{figure}
 
-We observe that we obtain exactly the same results as in \cite{DBLP:journals/corr/KollaJG16}, except for the expected regret of the network at rounds $ > 10000$. We observe a noisier
+We observe that we obtain exactly the same results as in \cite{DBLP:journals/corr/KollaJG16}, except for the expected regret of the network at rounds $ > 10000$. We get a noisier regret, even though we increased the number of simulations up to 1000 sample paths. We think that the authors of \cite{DBLP:journals/corr/KollaJG16} decided to smooth their curves.
 
 \subsubsection{Experiment 2}
 
@@ -257,6 +257,8 @@ Performance comparison of UCB-Network policy on various 20 node networks: 10 arm
   \caption{Our results for experiment 2 (1000 sample paths).}
 \end{figure}
 
+Here, we obtain the exact same results as in \cite{DBLP:journals/corr/KollaJG16}.
+
 \subsubsection{Experiment 3}
 
 Performance comparison of UCB-Network and FYL policies on various star networks: 2 arms, Bernoulli rewards with means $0.5$ and $0.7$.
@@ -275,98 +277,55 @@ Performance comparison of UCB-Network and FYL policies on various star networks:
   \caption{Our results for experiment 3 (1000 sample paths).}
 \end{figure}
 
-\subsection{Distributed star network}
+Same observation here as for experiment 1: we notice that we obtain exactly the same results as in \cite{DBLP:journals/corr/KollaJG16}, except for the expected regret of the network at rounds $ > 10000$. We get a noisier regret, even though we increased the number of simulations up to 1000 sample paths. We think that the authors of \cite{DBLP:journals/corr/KollaJG16} decided to smooth their curves.
 
-% FIXME UCBNetwork vs FYL vs AdaptativeLeaders
+\subsection{Evaluating Follow Best Informed (FBI) policy}
 
+\subsubsection{Star network vs FC-stars network}
+
+Finally, we provide experimental results to demonstrate the efficiency our Follow Best Informed (FBI) policy.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.6\linewidth]{fcstars.jpg}
+  \caption{A 29-nodes 5-FC-stars network.}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.49\linewidth]{fig4_1.png}
+  \includegraphics[width=0.49\linewidth]{fig4_2.png}
+  \caption{Performance comparison of UCB-Network, FYL, and FBI policies on a 100-nodes star network and on the 100-nodes 5-FC-stars network: 2 arms, Bernoulli rewards with means $0.5$ and $0.7$. (1000 sample paths).}
+\end{figure}
+
+% FIXME Interprétation?
+
+\subsubsection{}
+
+This gap is even larger on more pathological graph structure. Here, we compare FYL and FBI on this graph:
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.6\linewidth]{strange_network.jpg}
+  \caption{A pathological graph structure. The minimum dominating set is indicated in red.}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.49\linewidth]{fig5_1.png}
+  \includegraphics[width=0.49\linewidth]{fig5_2.png}
+  \caption{Performance comparison of FYL and FBI policies on the pathological graph structure: 2 arms, Bernoulli rewards with means $0.5$ and $0.7$. (1000 sample paths).}
+\end{figure}
+
+One issue of FYL is that it doesn't really take into account the full structure of the graph, and can only benefit from star structures. The more general the graph, the worst the policy. This comes from the fact that FYL policy relies on the dominating set (see upper bound of Theorem 6 from \cite{DBLP:journals/corr/KollaJG16}). In our example, the dominating set doesn't allow to collect the most samples, so FBI performs much better than FYL.
 
 \section{Conclusion}
+
+% FIXME Conclusion
 
 {\small
 \bibliographystyle{unsrt}
 \bibliography{biblio}
 }
-
-% FIXME remove everything below
-\newpage
-
-\section{Citations, figures, tables, references}
-\label{others}
-
-These instructions apply to everyone.
-
-\subsection{Citations within the text}
-
-The \verb+natbib+ package will be loaded for you by default.  Citations may be
-author/year or numeric, as long as you maintain internal consistency.  As to the
-format of the references themselves, any style is acceptable as long as it is
-used consistently.
-
-The documentation for \verb+natbib+ may be found at
-\begin{center}
-  \url{http://mirrors.ctan.org/macros/latex/contrib/natbib/natnotes.pdf}
-\end{center}
-Of note is the command \verb+\citet+, which produces citations appropriate for
-use in inline text.  For example,
-\begin{verbatim}
-   \citet{hasselmo} investigated\dots
-\end{verbatim}
-produces
-\begin{quote}
-  Hasselmo, et al.\ (1995) investigated\dots
-\end{quote}
-
-If you wish to load the \verb+natbib+ package with options, you may add the
-following before loading the \verb+neurips_2018+ package:
-\begin{verbatim}
-   \PassOptionsToPackage{options}{natbib}
-\end{verbatim}
-
-If \verb+natbib+ clashes with another package you load, you can add the optional
-argument \verb+nonatbib+ when loading the style file:
-\begin{verbatim}
-   \usepackage[nonatbib]{neurips_2018}
-\end{verbatim}
-
-As submission is double blind, refer to your own published work in the third
-person. That is, use ``In the previous work of Jones et al.\ [4],'' not ``In our
-previous work [4].'' If you cite your other papers that are not widely available
-(e.g., a journal paper under review), use anonymous author names in the
-citation, e.g., an author of the form ``A.\ Anonymous.''
-
-\subsection{Tables}
-
-All tables must be centered, neat, clean and legible.  The table number and
-title always appear before the table.  See Table~\ref{sample-table}.
-
-Place one line space before the table title, one line space after the
-table title, and one line space after the table. The table title must
-be lower case (except for first word and proper nouns); tables are
-numbered consecutively.
-
-Note that publication-quality tables \emph{do not contain vertical rules.} We
-strongly suggest the use of the \verb+booktabs+ package, which allows for
-typesetting high-quality, professional tables:
-\begin{center}
-  \url{https://www.ctan.org/pkg/booktabs}
-\end{center}
-This package was used to typeset Table~\ref{sample-table}.
-
-\begin{table}
-  \caption{Sample table title}
-  \label{sample-table}
-  \centering
-  \begin{tabular}{lll}
-    \toprule
-    \multicolumn{2}{c}{Part}                   \\
-    \cmidrule(r){1-2}
-    Name     & Description     & Size ($\mu$m) \\
-    \midrule
-    Dendrite & Input terminal  & $\sim$100     \\
-    Axon     & Output terminal & $\sim$10      \\
-    Soma     & Cell body       & up to $10^6$  \\
-    \bottomrule
-  \end{tabular}
-\end{table}
 
 \end{document}

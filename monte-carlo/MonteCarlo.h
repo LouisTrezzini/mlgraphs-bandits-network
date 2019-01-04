@@ -12,7 +12,7 @@ public:
 
     void simulate(IPolicy *policy, const std::string &fileName, time_t seed = time(NULL));
 
-    static void writeResults(std::vector<double> rewards, std::vector<unsigned long> bestActionPlayed, double maximumRewardPerRound, unsigned long actionsPerRound, const std::string &fileName);
+    static void writeResults(std::vector<double> rewards, std::vector<double> bestActionPlayed, double maximumRewardPerRound, unsigned long actionsPerRound, const std::string &fileName);
 };
 
 #endif //MLGRAPHS_BANDITS_NETWORK_MONTECARLO_H

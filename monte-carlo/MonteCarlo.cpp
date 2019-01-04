@@ -14,7 +14,7 @@ const bool USE_MULTI_THREADING = true;
 
 void MonteCarlo::simulate(IPolicy *policy, const std::string &fileName, time_t seed) {
     std::vector<double> rewards(horizon, 0);
-    std::vector<unsigned long> bestActionPlayed(horizon, 0);
+    std::vector<double> bestActionPlayed(horizon, 0);
     RNG generator(seed);
 
     auto start = std::chrono::high_resolution_clock::now();
@@ -71,7 +71,7 @@ void MonteCarlo::simulate(IPolicy *policy, const std::string &fileName, time_t s
     std::cout << "Average final reward: " << rewards[rewards.size() - 1] << std::endl;
 }
 
-void MonteCarlo::writeResults(std::vector<double> rewards, std::vector<unsigned long> bestActionPlayed,
+void MonteCarlo::writeResults(std::vector<double> rewards, std::vector<double> bestActionPlayed,
                               double maximumRewardPerRound, unsigned long actionsPerRound, const std::string &fileName) {
     std::ofstream outFile;
     outFile.open(fileName);
