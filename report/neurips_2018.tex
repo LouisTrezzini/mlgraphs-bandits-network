@@ -350,18 +350,18 @@ We show that it provides similar results as FYL for star networks, and improves 
   \centering
   \includegraphics[width=0.49\linewidth]{fig4_1.png}
   \includegraphics[width=0.49\linewidth]{fig4_2.png}
-  \caption{Performance comparison of UCB-Network, FYL, and FBI policies on a 100-nodes star network and on the 100-nodes 5-FC-stars network: 2 arms, Bernoulli rewards with means $0.5$ and $0.7$. (1000 sample paths).}
+  \caption{Performance comparison of UCB-Network, FYL, and FBI policies on a 100-nodes star network and on the 100-nodes 5-FC-stars network: 2 arms, Bernoulli rewards with means $0.5$ and $0.7$ (1000 sample paths).}
 \end{figure}
 
 As expected, FYL and FBI policies perform about the same on star and multiple stars networks. But the great improvement of FBI over FYL lies in its ability to naturally adapt to the graph structure. It greatly decreases expected regret for the multiple stars network, compared to FYL.
 
-\subsubsection{}
+\subsubsection{FYL can be really expensive on general graphs}
 
-This gap is even larger on more pathological graph structure. Here, we compare FYL and FBI on this graph:
+This gap is even larger on more pathological graph structure. Here, we compare FYL and FBI on this kind of graphs:
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.6\linewidth]{strange_network.jpg}
+  \includegraphics[width=0.6\linewidth]{star-chain.jpg}
   \caption{A pathological graph structure. The minimum dominating set is indicated in red.}
 \end{figure}
 
@@ -369,10 +369,10 @@ This gap is even larger on more pathological graph structure. Here, we compare F
   \centering
   \includegraphics[width=0.49\linewidth]{fig5_1.png}
   \includegraphics[width=0.49\linewidth]{fig5_2.png}
-  \caption{Performance comparison of FYL and FBI policies on the pathological graph structure: 2 arms, Bernoulli rewards with means $0.5$ and $0.7$. (1000 sample paths).}
+  \caption{Performance comparison of FYL and FBI policies on the pathological graph structure (star graph with 70 nodes, among which a 20-nodes long chain): 2 arms, Bernoulli rewards with means $0.5$ and $0.7$ (1000 sample paths).}
 \end{figure}
 
-One issue of FYL is that it doesn't really take into account the full structure of the graph, and can only benefit from star structures. The more general the graph, the worst the policy. This comes from the fact that FYL policy relies on the dominating set (see upper bound of Theorem 6 from \cite{DBLP:journals/corr/KollaJG16}). In our example, the dominating set doesn't allow children nodes to collect the most samples, so FBI performs much better than FYL.
+One issue of FYL is that it doesn't really take into account the full structure of the graph, and can only benefit from star structures. The more general the graph, the worst the policy. This comes from the fact that FYL policy relies on the dominating set (see upper bound of Theorem 6 from \cite{DBLP:journals/corr/KollaJG16}). In our example, the dominating set doesn't allow children nodes to collect samples efficiently, so FBI performs much better than FYL.
 
 \section{Conclusion}
 

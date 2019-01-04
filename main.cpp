@@ -222,6 +222,35 @@ int main(int argc, char *argv[]) {
             std::cout << "UCB-Network policy, 100-nodes star graph" << std::endl;
             monteCarloSimulator.simulate(policyUCB, "../experiment-4/UCB-star.txt", 0);
 
+            return 0;
+        }
+
+        // Experiment 5
+        case 5: {
+            std::vector<IArm *> arms = {
+                    new ArmBernoulli(0.5),
+                    new ArmBernoulli(0.7),
+            };
+            const Bandit MAB(arms);
+
+            Network chainStar = NetworkFactory::createChainStarGraph(70, 20);
+            auto leaders = NetworkFactory::createChainStarGraphLeaders(70, 20);
+            GraphViz::write(chainStar, "network.graphviz");
+
+            const BanditNetwork banditNetwork(&MAB, &chainStar);
+
+            IPolicy *policyFYL = new FollowYourLeaderPolicy(&banditNetwork, leaders);
+            IPolicy *policyFBI = new FollowBestInformedPolicy(&banditNetwork);
+            IPolicy *policyUCB = new UCBNetworkPolicy(&banditNetwork);
+
+            MonteCarlo monteCarloSimulator(1000, 100000);
+
+            std::cout << "Follow best informed policy, chain star" << std::endl;
+            monteCarloSimulator.simulate(policyFBI, "../experiment-5/FBI.txt", 0);
+            std::cout << "Follow your leader policy, chain star" << std::endl;
+            monteCarloSimulator.simulate(policyFYL, "../experiment-5/FYL.txt", 0);
+            std::cout << "UCB-Network policy, chain star" << std::endl;
+            monteCarloSimulator.simulate(policyUCB, "../experiment-5/UCB.txt", 0);
 
             return 0;
         }

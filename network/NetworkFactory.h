@@ -133,6 +133,50 @@ public:
 
         return leaders;
     }
+
+    static Network createChainStarGraph(unsigned long N, unsigned long chainLength) {
+        std::vector<Edge> edges;
+
+        unsigned long n = N - chainLength + 1;
+
+        for (unsigned long i = 1; i < n; i++) {
+            edges.emplace_back(0, i);
+        }
+
+        for (unsigned long i = n; i < N; i++) {
+            edges.emplace_back(i - 1, i);
+        }
+
+        Network g(N, edges);
+
+        return g;
+    }
+
+    static std::unordered_map<unsigned long, unsigned long>
+    createChainStarGraphLeaders(unsigned long N, unsigned long chainLength) {
+        std::unordered_map<unsigned long, unsigned long> leaders;
+
+        unsigned long n = N - chainLength + 1;
+        for (unsigned long i = 1; i < n; i++) {
+            leaders[i] = 0;
+        }
+
+        for (unsigned long i = 0; i < N - n; i++) {
+            if (i % 3 == 0) {
+                leaders[n + i] = n + i + 1;
+            } else if (i % 3 == 2) {
+                leaders[n + i] = n + i - 1;
+            }
+        }
+
+
+        std::cerr << "createChainStarGraphLeaders" << std::endl;
+        for (auto const& pair: leaders) {
+            std::cerr << "{" << pair.first << ": " << pair.second << "}" << std::endl;
+        }
+
+        return leaders;
+    }
 };
 
 
