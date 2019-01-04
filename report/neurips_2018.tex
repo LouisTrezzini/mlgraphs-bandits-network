@@ -31,6 +31,7 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{algorithm}
+\usepackage{amsthm}
 \usepackage{algorithmic}
 \newtheorem{theorem}{Theorem}
 \newtheorem{corollary}{Corollary}
@@ -64,7 +65,7 @@
 \maketitle
 
 \begin{abstract}
-  A single-agent multi-armed bandit (MAB) problem is a problem in which a gambler, being in face of several slot machines, has to decide which machines to play, how many times and in which order to play each machine.
+  A single-agent multi-armed bandit (MAB) problem is a problem in which a gambler, being faced to several slot machines, has to decide which machines to play, how many times and in which order to play each machine.
   % There are two different goals in such problems, regret minimization which aims at maximizing the total reward along the trials, and best arm identification which aims at identifying as quickly as possible the best arm. In this project we will mainly focus on the first aspect.
   In this project, we consider a multi-agent MAB scenario in which a group of agents connected through a social network are engaged in playing a stochastic MAB game and focus on minimizing their regret. Every time a player takes an action, the reward is observed by both the agent and its neighbors in the network.
   The goal of this project is to understand different collaborative policies (NAIC-type and FYL) described in \cite{DBLP:journals/corr/KollaJG16}, and to compare their performance over different network structures.
@@ -207,6 +208,48 @@ We decided not to focus on the lower bounds on the expected regret during this r
 
 %FIXME preuve du corollaire
 %FIXME preuve du corollaire pour un réseau en étoileSSSS
+\subsection{Upper bound of the UCB-network policy on a multiple stars graph}
+
+Suppose that you have the following graph that we call multiple stars graph. There are $n$ stars on the graph. Each star $i$ has $m_i$ children. The only connections between stars are made through their central nodes. These connections can be can be anything ranging from full disconnection of central nodes of the stars to full connection of the central nodes of the stars. \\
+
+\textbf{Proposition 1} [Upper bound of the UCB-network policy on a multiple stars graph] Assume that  a multiple stars graph G as defined above, follows a UCB-network policy to learn a stochastic MAB problem with K arms. Further, assume that rewards are in $[0, 1]$. Then, regardless of the connections between the central nodes of the stars, the expected total regret of G is upper bounded as : 
+\begin{align*}
+\mathbb{E}(R^G(n)) \leq \sum_{j=1}^n m_i \sum_{i:\mu_i< \mu^*} \frac{8\ln(n)}{\Delta_i}  + b
+\end{align*} 
+where $\Delta_i = \mu^* - \mu_i$, $\beta \in (0.25,1)$, $b~=~m \left[ \frac{2}{4\beta -1} + \frac{2}{(4\beta-1)^2 \ln(1/\beta)} \right] \left( \sum\limits_{j=1}^K \Delta_j \right)$
+
+\begin{proof}
+
+We use Theorem 1 of \cite{DBLP:journals/corr/KollaJG16} to get the general result, and we only need to prove that for our multiple stars network G, we have that $C_G = \sum_{j=1}^n m_i$. For that, we need to solve the optimization program (2) of Theorem 1 of \cite{DBLP:journals/corr/KollaJG16}. For our network, the formulation is that $C_Gl_i$ is the solution of the following optimisation problem where A is the adjacency matrix of our graph.
+
+\begin{equation*}
+\begin{aligned}
+& \underset{x}{\text{maximize}}
+&& ||z_{n + \sum_{j=1}^n m_i}|| 
+&&& \\
+& \text{subject to}
+&& \exists\text{ a sequence }\{z_k\}_{k=1}^{n + \sum_{j=1}^n m_i} \in \{0, l_i\}^{n + \sum_{j=1}^n m_i}
+&&& \\
+& 
+&& \exists\text{ a permutation }\{\eta_k\}_{k=1}^{n + \sum_{j=1}^n m_i} \text{ of } (1, ..., n + \sum_{j=1}^n m_i)
+&&& \\
+& 
+&& z_j(\eta_k) = z_k(\eta_k) 
+&&& \forall j \geq k \\
+&
+&& \langle z_k, A(\eta_k, :)\rangle \geq l_i
+&&& 1\leq k \leq n + \sum_{j=1}^n m_i
+\end{aligned}
+\end{equation*}
+
+For a multiple-stars network, the solution of this program is $l_i \sum_{j=1}^n m_i$. This corresponds to the scenario where none of the stars centers never chooses the sub-optimal arm $i$, and every leaf of every star chooses it $l_i$ times. It is clearly feasible because, we can have $z_{n + \sum_{j=1}^n m_i}$ be 0 for all the centers of the stars, and $l_i$ for all the leaves. Then the order of the permutation $\eta_k$ doesn't matter.  \\
+
+Moreover, if the centers of the stars are fully disconnected, we know that $l_i \sum_{j=1}^n m_i$ is indeed the maximum of the program because we can solve it star by star as they don't interact. When there is a connection between the centers, there is more information going through the graph, and therefore, the maximum can only be lower than $l_i \sum_{j=1}^n m_i$. \\
+
+Therefore, the maximum is indeed $l_i \sum_{j=1}^n m_i$, and we have $C_G = \sum_{j=1}^n m_i$.
+
+
+\end{proof}
 
 %FIXME amélioration de FYL (adaptatif, pas besoin de calculer le dominating set)
 %FIXME preuve que l'amélioration est non-individually consistent?
