@@ -7,7 +7,7 @@
 #include "bandit/BanditNetwork.h"
 #include "bandit/ArmBernoulli.h"
 #include "policy/UCBNetworkPolicy.h"
-#include "policy/FollowYourLeaderNetworkPolicy.h"
+#include "policy/FollowYourLeaderPolicy.h"
 #include "policy/FollowBestInformedPolicy.h"
 #include "util/GraphViz.h"
 #include "monte-carlo/MonteCarlo.h"
@@ -147,15 +147,15 @@ int main(int argc, char *argv[]) {
             const BanditNetwork banditNetwork350(&MAB, &star3);
 
             auto leaders25 = NetworkFactory::createStarGraphLeaders(25);
-            IPolicy *policyFYL25 = new FollowYourLeaderNetworkPolicy(&banditNetwork25, leaders25);
+            IPolicy *policyFYL25 = new FollowYourLeaderPolicy(&banditNetwork25, leaders25);
             IPolicy *policyUCB25 = new UCBNetworkPolicy(&banditNetwork25);
 
             auto leaders100 = NetworkFactory::createStarGraphLeaders(100);
-            IPolicy *policyFYL100 = new FollowYourLeaderNetworkPolicy(&banditNetwork100, leaders100);
+            IPolicy *policyFYL100 = new FollowYourLeaderPolicy(&banditNetwork100, leaders100);
             IPolicy *policyUCB100 = new UCBNetworkPolicy(&banditNetwork100);
 
             auto leaders350 = NetworkFactory::createStarGraphLeaders(350);
-            IPolicy *policyFYL350 = new FollowYourLeaderNetworkPolicy(&banditNetwork350, leaders350);
+            IPolicy *policyFYL350 = new FollowYourLeaderPolicy(&banditNetwork350, leaders350);
             IPolicy *policyUCB350 = new UCBNetworkPolicy(&banditNetwork350);
 
             MonteCarlo monte_carlo_simulator(100, 100000);
@@ -180,8 +180,8 @@ int main(int argc, char *argv[]) {
 
         // Experiment 4
         case 4: {
-            unsigned long numberOfStars = 3;
-            std::vector<unsigned long> numberOfChildren{3, 3, 30};
+            unsigned long numberOfStars = 5;
+            std::vector<unsigned long> numberOfChildren{12, 12, 12, 12, 48};
             Network fcstars = NetworkFactory::createFullyConnectedStarsGraph(numberOfStars, numberOfChildren);
             GraphViz::write(fcstars, "network.graphviz");
 
@@ -194,15 +194,18 @@ int main(int argc, char *argv[]) {
             const BanditNetwork banditNetwork(&MAB, &fcstars);
 
             auto leaders = NetworkFactory::createFullyConnectedStarsGraphLeaders(numberOfStars, numberOfChildren);
-            IPolicy *policyFYL = new FollowYourLeaderNetworkPolicy(&banditNetwork, leaders);
+            IPolicy *policyFYL = new FollowYourLeaderPolicy(&banditNetwork, leaders);
             IPolicy *policyFBI = new FollowBestInformedPolicy(&banditNetwork);
+            IPolicy *policyUCB = new UCBNetworkPolicy(&banditNetwork);
 
             MonteCarlo monte_carlo_simulator(100, 100000);
 
-            std::cout << "Follow best informed policy, 3 stars graph with fully connected leaders" << std::endl;
+            std::cout << "Follow best informed policy, 5 stars graph with fully connected leaders" << std::endl;
             monte_carlo_simulator.simulate(policyFBI, "../experiment-4/FBI.txt", 0);
-            std::cout << "Follow your leader policy, 3 stars graph with fully connected leaders" << std::endl;
+            std::cout << "Follow your leader policy, 5 stars graph with fully connected leaders" << std::endl;
             monte_carlo_simulator.simulate(policyFYL, "../experiment-4/FYL.txt", 0);
+            std::cout << "UCB-Network policy, 5 stars graph with fully connected leaders" << std::endl;
+            monte_carlo_simulator.simulate(policyUCB, "../experiment-4/UCB.txt", 0);
 
             return 0;
         }

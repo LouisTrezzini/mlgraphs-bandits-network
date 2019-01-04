@@ -1,1 +1,1 @@
-neato -Tjpg -onetwork.jpg cmake-build-debug/network.graphviz && xdg-open network.jpg
+neato -Tjpg -onetwork.jpg cmake-build-release/network.graphviz && xdg-open network.jpg

@@ -19,8 +19,8 @@ set(POLICY_FILES
         policy/IPolicy.h
         policy/UCBNetworkPolicy.cpp
         policy/UCBNetworkPolicy.h
-        policy/FollowYourLeaderNetworkPolicy.h
-        policy/FollowYourLeaderNetworkPolicy.cpp
+        policy/FollowYourLeaderPolicy.h
+        policy/FollowYourLeaderPolicy.cpp
         monte-carlo/MonteCarlo.h
         monte-carlo/MonteCarlo.cpp
         policy/FollowBestInformedPolicy.h
