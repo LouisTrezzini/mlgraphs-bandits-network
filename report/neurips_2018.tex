@@ -209,12 +209,18 @@ We decided not to focus on the lower bounds on the expected regret during this r
 \section{Our theoretical contributions}
 
 % FIXME introduire cette section
+\subsection{Upper bound of the UCB-network policy on a star graph}
 
-%FIXME preuve du corollaire
+We want to prove Corollary \ref{cor:star} of \cite{DBLP:journals/corr/KollaJG16} using Theorem 1. Therefore we need to prove that for a $m$-node star network G, $C_G = m-1$. In order to do that we set $l_i \in \mathbb{N}$ and we need to solve the optimization problem (\ref{OptimizationProblem11}). As said in \cite{DBLP:journals/corr/KollaJG16}, the maximum of the optimization program happens when every leaf plays the sub-optimal arm $i$ $l_i$ times, and the central node never plays it. \\
+
+To prove it we can see that $z_m$ equal to $l_i$ for every leaf and 0 for the center node is admissible, and in that case the permutation $\eta_k$ doesn't matter. Moreover, if $z_m$ for the central node is equal to $L > 0$, then $z_m$ can never be more than $l_i - L$, because when an node has $l_i$ samples of the sub-optimal arm, it stops playing it. Therefore, we would have $\Vert z_m \Vert_1 = L + (m-1)(l_i -L) < (m-1)l_i$.
+
 
 \subsection{Upper bound on the expected regret for UCB-Network policy on a multiple stars graph}
 
-Suppose that you have the following $m$-nodes graph, that we call multiple stars graph. There are $S$ stars on the graph. Each star $j$ is made of a hub and its $m_j$ children. The only connections between stars are made through their hub (central node). These connections can be can be anything ranging from full disconnection of central nodes of the stars to full connection of the central nodes of the stars.
+Suppose that you have the following $m$-nodes graph, that we call multiple stars graph. There are $S$ stars on the graph. Each star $j$ is made of a hub and its $m_j$ children. The only connections between stars are made through their hub (central node). These connections can be can be anything ranging from full disconnection of central nodes of the stars to full connection of the central nodes of the stars. \\
+
+We want to study this type of graph, because we think that it is an interesting generalization of star graphs. Moreover, we will use this type of graph to compare FYL and a new policy, FBI, that we propose in the next section. \\
 
 \begin{proposition}[Upper bound on the expected regret for UCB-Network policy on a multiple stars graph]
   Assume that  a multiple stars graph G as defined above, follows a UCB-Network policy to learn a stochastic MAB problem with K arms. Further, assume that rewards are in $[0, 1]$. Then, regardless of the connections between the central nodes of the stars, the expected total regret of G is upper bounded as :
@@ -230,12 +236,12 @@ Suppose that you have the following $m$-nodes graph, that we call multiple stars
 
 \begin{proof}
 
-We use Theorem 1 of \cite{DBLP:journals/corr/KollaJG16} to get the general result, and we only need to prove that for our multiple stars network G, we have that $C_G = \sum_{j=1}^m m_j = m - S$. For that, we need to solve the optimization program (2) of Theorem 1 of \cite{DBLP:journals/corr/KollaJG16}. For our network, the formulation is that $C_Gl_i$ is the solution of the following optimisation problem where A is the adjacency matrix of our graph.
+We use Theorem 1 of \cite{DBLP:journals/corr/KollaJG16} to get the general result, and we only need to prove that for our multiple stars network G, we have that $C_G = \sum_{j=1}^m m_j = m - S$. For that, we need to solve the optimization program (\ref{OptimizationProblem11}) of Theorem 1 of \cite{DBLP:journals/corr/KollaJG16}. For our network, the formulation is that $C_Gl_i$ is the solution of the following optimisation problem where A is the adjacency matrix of our graph.
 
 \begin{equation*}
 \begin{aligned}
 & \underset{x}{\text{maximize}}
-&& ||z_{m}||
+&& \Vert z_m \Vert_1
 &&& \\
 & \text{subject to}
 && \exists\text{ a sequence }\{z_k\}_{k=1}^{m} \in \{0, l_i\}^{m}
@@ -260,8 +266,37 @@ Therefore, the maximum is indeed $l_i \sum_{j=1}^S m_j$, and we have $C_G = \sum
 
 \end{proof}
 
-%FIXME amélioration de FYL (adaptatif, pas besoin de calculer le dominating set)
-%FIXME preuve que l'amélioration est non-individually consistent?
+
+\subsection{Follow Best Informed (FBI) policy}
+
+For most types of graphs, the FYL policy is an improvement of the UCB-network policy. For example, for a star graph, the FYL policy makes perfect sense. However, as the graphs become more and more complex, FYL suffers from the issue that a node may want to follow another node that is not directly its neighbor because its leader may not be very informed, and another node not "too far" may have much better information that could be conveyed to the original node. Moreover, finding the optimal leaders set on a graph may not be easy. To solve these issue, we introduce a new policy that we call the Follow Best Informed (FBI) policy. \\
+
+\subsubsection{Description of the FBI policy}
+
+When a node performs an action, it will output the action and the reward just like in FYL, but it will also output the number of samples the action was decided upon. For example, if the node chooses an action at random, then its action was based of 0 samples. If it uses an UCB policy, then the action was based on the time passed times the number of its neighbors plus 1 (itself), because it has access and uses that number of samples. Finally, if the node copies an action of one of its neighbors, then this action is based on as many samples as the original action from the neighbor node was based on.  \\
+
+At each step, a node of a network following the FBI policy will look only at its neighbors. It will find the one that performed an action during the previous round based on the most information, i.e. based on the most samples. If the action it performed is based on more samples than what the current node has access to, then it will replicate the action. If it was based on the same number of samples, or less samples, the current node will perform an action using a UCB policy based on its own samples it collected previously. It is better to decide by oneself what action to perform when one has the same amount of information as its neighbors, because that will reduce the variance of the overall reward. \\
+
+Note that the policy of a follower node is not individually consistent. Therefore, we actually need to make sure that some nodes perform the UCB policy, which will be propagated through the graph.That will always happen because there is at least one node in a graph that has access to equal or higher information than any other node in the graph.
+
+\subsubsection{FBI answers the same problem as FYL, and doesn't need further hypotheses}
+
+When the FBI policy is described as above, it seems that the nodes need to do additional work than in the FYL policy, because nodes have to output an additional parameter when they performed an action. However, the additional parameter they output is in fact deterministic for all runs, and only depends on the structure of the graph. Whatever randomness happens, a node will always choose an action the same way (random choice, UCB, or follow a neighbor) because it always has access to the same number of information, and so do its neighbors. Therefore, the only thing required to apply our policy is to know the structure of the graph. This is also needed in the FYL policy because we need to determine the leader set beforehand. Therefore we don't need to make further hypotheses to implement the FBI policy.
+
+\subsubsection{Usefulness of the FBI policy}
+
+The first improvement of t\textbf{he FBI policy is that it doesn't need a set of leaders as input}. As said in \cite{DBLP:journals/corr/KollaJG16}, finding a leaders set is a NP-hard problem and the solution output by the FYL policy greatly depends on this leaders set. That means that the BI policy will be much easier to implement on a complex graph. \\
+
+Moreover, on a star graph FYL with optimal leaders set and FBI will perform the same way. On more complicated graphs like multiple stars network, or a star network with a chain; the FBI policy will perform better than FLY policy, sometimes significantly. The experimental results we got are shown in section \ref{FBI}.
+
+\subsubsection{Further improvement of FBI}
+
+The FBI policy only looks at its most informed neighbor. However, it could happen that a node has multiple neighbors informed about in the same way. If the best informed plays an action different from the rest, then there may be a high probability that the most informed neighbor is wrong. Therefore, an improvement of FBI could be to choose the action of a neighbor with a certain probability depending on the number of sample it based its last action on. Actually, the probability would probably depend on the square root of the number of samples because confidence bounds work with square roots of number of samples. That way, we think we could again improve the FBI policy.
+
+
+
+
+
 
 \newpage
 
@@ -332,6 +367,7 @@ Performance comparison of UCB-Network and FYL policies on various star networks:
 Same observation here as for experiment 1: we notice that we obtain exactly the same results as in \cite{DBLP:journals/corr/KollaJG16}, except for the expected regret of the network at rounds $ > 10000$. We get a noisier regret, even though we increased the number of simulations up to 1000 sample paths. We think that the authors of \cite{DBLP:journals/corr/KollaJG16} decided to smooth their curves.
 
 \subsection{Evaluating Follow Best Informed (FBI) policy}
+\label{FBI}
 
 \subsubsection{Comparison between star network and multiple stars network}
 
