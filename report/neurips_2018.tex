@@ -404,6 +404,9 @@ One issue of FYL is that it doesn't really take into account the full structure 
 
 \section{Conclusion}
 
+In this report we reviewed article \cite{DBLP:journals/corr/KollaJG16}. We understood the proofs and reproduced there experimental results. We indeed came to the same conclusions such as the UCB-Network policy not taking advantage of the structure of the graph, and being largely beaten by the FYL policy on star graphs.
+
+Moreover, we added our own theoretical contribution. First, we computed the upper bound for UCB-Network policies on multiple stars graphs. Second, we identified weak spots of the FYL policy and imagined a new policy, the FBI policy that fills the gaps. We then experimented and found  out that the FBI policy was indeed better than the FYL policy on complex graphs such as multiple stars graphs or a star graph with a chain. Besides, the FBI policy does not need a leaders set as input, which is a big improvement compared to the FYL policy as finding the optimal leaders set is a NP-hard problem.
 % FIXME Conclusion
 
 {\small
