@@ -82,13 +82,13 @@ The interesting part of bandit networks is that we consider multiple agents play
 We use the definitions and notations from \cite{DBLP:journals/corr/KollaJG16}. Let's restate them quickly.
 
 \subsection{Single-agent stochastic multi-armed bandit (MAB) problem}
-Let $\mathcal{K} = \lbrace 1, 2,\dots, K \rbrace$ be the set of arms available to the agent. Each arm is associated with a distribution $\mathcal{P}_k$, and let $\mu_k$ be the corresponding mean, unknown to the agent. Let $n$ be the time horizon or the total number of rounds. In each round $t$, the agent chooses an arm, for which he receives a reward, an i.i.d. sample drawn from the chosen arm's distribution. The agent can use the knowledge of the chosen arms and the corresponding rewards upto round $(t-1)$ to select an arm in round $t.$ The goal of the agent is to maximize the cumulative expected reward up to round $n$.
+Let $\mathcal{K} = \lbrace 1, 2,\dots, K \rbrace$ be the set of arms available to the agent. Each arm is associated with a distribution $\mathcal{P}_k$, and let $\mu_k$ be the corresponding mean, unknown to the agent. Let $n$ be the time horizon or the total number of rounds. In each round $t$, the agent chooses an arm, for which he receives a reward, an i.i.d. sample drawn from the chosen arm's distribution. The agent can use the knowledge of the chosen arms and the corresponding rewards up to round $(t-1)$ to select an arm in round $t.$ The goal of the agent is to maximize the cumulative expected reward up to round $n$.
 
 \subsection{Multi-agent stochastic multi-armed bandit (MAB) problem}
-We consider a set of users $V$ connected by an undirected fixed network $G=(V,E)$, with $| V | = m$. Assume that each user is learning the same stochastic MAB problem i.e., faces a choice in each time from among the same set of arms $\mathcal{K}$. In the $t^{th}$ round, each user $v$ chooses an arm, denoted by $a^v(t) \in \mathcal{K}$, and receives a reward, denoted by $X^v_{a^v(t)}(t)$, an i.i.d. sample drawn from $\mathcal{P}_{a^v(t)}$.
-In the  stochastic MAB problem set-up, for a given user $v$, the rewards from arm $i$, denoted by $\{X^v_i(t): t = 1, 2, \ldots \}$, are i.i.d. across rounds. Moreover, the rewards from distinct arms $i$ and $j$, $X^v_i(t)$, $X^v_j(s)$, are independent. If multiple users choose the same action in a certain round, then each of them gets an independent reward sample drawn from the chosen arm's distribution. We use the subscripts $i$, $v$ and $t$ for arms, nodes and time respectively. The information structure available to each user is as follows. A user $v$ can observe the actions and the respective rewards of itself and its one hop neighbors in round $t$, before deciding the action for round $(t+1)$.
+We consider a set of users $V$ connected by an undirected fixed network $G=(V,E)$, with $| V | = m$. Assume that each user is learning the same stochastic MAB problem i.e., has to choose from the same set of arms $\mathcal{K}$ at each time step. In the $t^{th}$ round, each user $v$ chooses an arm, denoted by $a^v(t) \in \mathcal{K}$, and receives a reward, denoted by $X^v_{a^v(t)}(t)$, an i.i.d. sample drawn from $\mathcal{P}_{a^v(t)}$.
+In the  stochastic MAB problem setup, for a given user $v$, the rewards from arm $i$, denoted by $\{X^v_i(t): t = 1, 2, \ldots \}$, are i.i.d. across rounds. Moreover, the rewards from distinct arms $i$ and $j$, $X^v_i(t)$, $X^v_j(s)$, are independent. If multiple users choose the same action in a certain round, then each of them gets an independent reward sample drawn from the chosen arm's distribution. We use the subscripts $i$, $v$ and $t$ for arms, nodes and time respectively. The information structure available to each user is as follows. A user $v$ can observe the actions and the respective rewards of itself and its one hop neighbors in round $t$, before deciding the action for round $(t+1)$.
 
-The policy $\Phi^v$ followed by a user prescribes actions at each time $t,$ $\Phi^v(t): H^v(t) \rightarrow \mathcal{K},$ where $H^v(t)$ is the information available with the user till round $t.$ A policy of the network $G,$ denoted by $\Phi,$ comprises of the policies pertaining to all users in $G.$ The performance of a policy is quantified by a real-valued random variable, called \textit{regret}, defined as follows. The regret incurred by user $v$ for using the policy $\Phi^v$ up to round $n$ is defined as,
+The policy $\Phi^v$ followed by a user prescribes actions at each time $t,$ $\Phi^v(t): H^v(t) \rightarrow \mathcal{K},$ where $H^v(t)$ is the information available with the user until round $t.$ A policy of the network $G,$ denoted by $\Phi,$ comprises of the policies pertaining to all users in $G.$ The performance of a policy is quantified by a real-valued random variable, called \textit{regret}, defined as follows. The regret incurred by user $v$ for using the policy $\Phi^v$ up to round $n$ is defined as,
 \begin{equation*}
 \label{eq:2.1}
 R^v_{\Phi}(n) = \sum\limits_{t=1}^n \left( \mu^* - \mu_{a^v(t)} \right)  = n \mu^* - \sum\limits_{t=1}^n \mu_{a^v(t)},
@@ -100,18 +100,18 @@ where $a^v(t)$ is the action chosen by the policy $\Phi^v$ at time $t$, and $\mu
 \end{equation}
 where $\Delta_i = \mu^* - \mu_i$, and $T_i^v(n)$ is the number of times arm $i$ has been chosen by $\Phi^v$ up to round $n$. We omit $\Phi$ from the regret notation, whenever the policy can be understood from the context. Our goal is to devise learning policies in order to minimise the expected regret of the network.
 
-Let $\mathcal{N}(v)$ denote the set consisting of the node $v$ and its one-hop neighbours. Let $m^v_i(t)$ be the number of times arm $i$ has been chosen by node $v$ and its one-hop neighbors till round $t$, and  $\hat{\mu}_{m_i^v(t)}$ be the average of the corresponding reward samples. These are given as:
+Let $\mathcal{N}(v)$ denote the set consisting of the node $v$ and its one-hop neighbours. Let $m^v_i(t)$ be the number of times arm $i$ has been chosen by node $v$ and its one-hop neighbors until round $t$, and  $\hat{\mu}_{m_i^v(t)}$ be the average of the corresponding reward samples. These are given as:
 \begin{align*}
 m^v_i(t)  &= \sum\limits_{u \in \mathcal{N}(v)} T_i^u(t) \\
 \hat{\mu}_{m_i^v(t)} &=\frac{1}{{m_i^v(t)}} \sum\limits_{u \in \mathcal{N}(v)} \sum\limits_{k=1}^{t} X_{a^u(k)}^u(k) \mathbb{I} \lbrace a^u(k) = i \rbrace,
 \end{align*}
-where $\mathbb{I}$ denotes the indicator function. We use $m^G_i(t)$ to denote the number of times arm $i$ has been chosen by all nodes in the network till round $t$.
+where $\mathbb{I}$ denotes the indicator function. We use $m^G_i(t)$ to denote the number of times arm $i$ has been chosen by all nodes in the network until round $t$.
 
 \section{Policies}
 
 \subsection{UCB-Network}
 
-They propose the natural extension of the well-known single agent policy UCB to the network-setting, that they call "UCB-user". When each user in the network follows the UCB-user policy, the network policy is called UCB-Network and is outlined in Algorithm~\ref{alg:UCB-Network}.
+\citep{DBLP:journals/corr/KollaJG16} proposes the natural extension of the well-known single agent policy UCB to the network-setting, that they call "UCB-user". When each user in the network follows the UCB-user policy, the network policy is called UCB-Network and is outlined in Algorithm~\ref{alg:UCB-Network}.
 \begin{algorithm}[htb]
    \caption{Upper-Confidence-Bound-Network (UCB-Network)}
    \label{alg:UCB-Network}
@@ -164,7 +164,7 @@ $C_G$ is a network dependent parameter, defined as follows.
 \end{corollary}
 
 \subsection{Follow Your Leader (FYL)}
-They present a second network policy called Follow Your Leader (FYL) for a generic $m$-node network. The policy is based on exploiting high-degree hubs in the graph; for this purpose, we need to define notions of dominating sets and dominating set partitions.
+They also present a second network policy called Follow Your Leader (FYL) for a generic $m$-node network. The policy is based on exploiting high-degree hubs in the graph; for this purpose, we need to define notions of dominating sets and dominating set partitions.
 
 \textbf{Definition 3} [Dominating set of a graph] A \textit{dominating set} $D$ of a graph $G = (V,E)$ is a subset of $V$ such that every node in $V\setminus D$ is adjacent to atleast one of the nodes in $D$.
 
@@ -208,17 +208,17 @@ We decided not to focus on the lower bounds on the expected regret during this r
 
 \section{Our theoretical contributions}
 
-During our review of paper \cite{DBLP:journals/corr/KollaJG16}, we noticed that some proofs were missing, and that we could improve the proposed policies. In this section, we present these theoretical contributions to the multi-agent stochastic multi-armed bandit (MAB) problem.
+During our review of paper \cite{DBLP:journals/corr/KollaJG16}, we thought it would be interesting to elaborate on some proofs, and that we could improve the proposed policies. In this section, we present these theoretical contributions to the multi-agent stochastic multi-armed bandit (MAB) problem.
 
 \subsection{Upper bound of the UCB-network policy on a star graph}
 
-We want to prove Corollary \ref{cor:star} of \cite{DBLP:journals/corr/KollaJG16} using Theorem 1. Therefore we need to prove that for a $m$-node star network G, $C_G = m-1$. In order to do that we set $l_i \in \mathbb{N}$ and we need to solve the optimization problem (\ref{OptimizationProblem11}). As said in \cite{DBLP:journals/corr/KollaJG16}, the maximum of the optimization program happens when every leaf plays the sub-optimal arm $i$ $l_i$ times, and the central node never plays it.
+We want to prove Corollary \ref{cor:star} of \cite{DBLP:journals/corr/KollaJG16} using Theorem 1. Therefore we need to prove that for a $m$-node star network $G$, $C_G = m-1$. In order to do that we set $l_i \in \mathbb{N}$ and we need to solve the optimization problem (\ref{OptimizationProblem11}). As said in \cite{DBLP:journals/corr/KollaJG16}, the maximum of the optimization program happens when every leaf plays the sub-optimal arm $i$ $l_i$ times, and the central node never plays it.
 
-To prove it we can see that $z_m$ equal to $l_i$ for every leaf and 0 for the center node is admissible, and in that case the permutation $\eta_k$ doesn't matter. Moreover, if $z_m$ for the central node is equal to $L > 0$, then $z_m$ can never be more than $l_i - L$, because when an node has $l_i$ samples of the sub-optimal arm, it stops playing it. Therefore, we would have $\Vert z_m \Vert_1 = L + (m-1)(l_i -L) < (m-1)l_i$.
+To prove it we can see that $z_m$ being equal to $l_i$ for every leaf and 0 for the center node is admissible, and in that case the permutation $\eta_k$ doesn't matter. Moreover, if $z_m$ for the central node is equal to $L > 0$, then $z_m$ can never be more than $l_i - L$ for the leaves, because when an node has $l_i$ samples of the sub-optimal arm, it stops playing it. Therefore, we would have, $$\Vert z_m \Vert_1 = L + (m-1)(l_i -L) < (m-1)l_i$$
 
 \subsection{Upper bound on the expected regret for UCB-Network policy on a multiple stars graph}
 
-Suppose that you have the following $m$-nodes graph, that we call multiple stars graph. There are $S$ stars on the graph. Each star $j$ is made of a hub and its $m_j$ children. The only connections between stars are made through their hub (central node). These connections can be can be anything ranging from full disconnection of central nodes of the stars to full connection of the central nodes of the stars.
+Suppose that you have the following $m$-nodes graph, that we call multiple stars graph. There are $S$ stars on the graph. Each star $j$ is made of a hub and its $m_j$ children. The only connections between stars are made through their hub (central node). These connections can be can be anything ranging from full disconnection to full connection of the hubs.
 
 We want to study this type of graph, because we think that it is an interesting generalization of star graphs. Moreover, we will use this type of graph to compare FYL and a new policy, FBI, that we propose in the next section.
 
@@ -284,7 +284,7 @@ When the FBI policy is described as above, it seems that the nodes need to do ad
 
 \subsubsection{Usefulness of the FBI policy}
 
-The first improvement of t\textbf{he FBI policy is that it doesn't need a set of leaders as input}. As said in \cite{DBLP:journals/corr/KollaJG16}, finding a leaders set is a NP-hard problem and the solution output by the FYL policy greatly depends on this leaders set. That means that the FBI policy will be much easier to implement on a complex graph.
+The first improvement of \textbf{the FBI policy is that it doesn't need a set of leaders as input}. As said in \cite{DBLP:journals/corr/KollaJG16}, finding a leaders set is a NP-hard problem and the solution output by the FYL policy greatly depends on this leaders set. That means that the FBI policy will be much easier to implement on a complex graph.
 
 Moreover, on a star graph FYL with optimal leaders set and FBI will perform the same way. On more complicated graphs like multiple stars network, or a star network with a chain; the FBI policy will perform better than FLY policy, sometimes significantly. The experimental results we got are shown in section \ref{FBI}.
 
