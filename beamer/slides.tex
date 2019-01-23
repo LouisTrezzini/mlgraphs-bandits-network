@@ -133,7 +133,7 @@ Nodes 41-49 are \alert{missing on a lot of information} !
 
 \begin{frame}{Follow Best Informed (FBI) policy}
 \begin{itemize}
-\item FYL policy is myopic 
+\item FYL policy is myopic
 \item In addition to their previous action, nodes can output the number of samples (information) they used to compute it
 \item Nodes can \alert{follow their best informed neighbor and use UCB-policy if they are better informed}
 \item Actually, the structure of a graph fully determines the behavior of the nodes (but not their precise actions obviously)
@@ -144,7 +144,7 @@ Nodes 41-49 are \alert{missing on a lot of information} !
 \begin{figure}
 \includegraphics[scale=0.18]{fcstars}
 \caption{\centering Fully connected stars graph}
-After first iteration, node 4 has the most information. It can pass it to nodes 0-3, who will then pass it to their children. 
+After first iteration, node 4 has the most information. It can pass it to nodes 0-3, who will then pass it to their children.
 \end{figure}
 \end{frame}
 
@@ -171,7 +171,7 @@ After first iteration, node 4 has the most information. It can pass it to nodes 
 \item \textbf{Downside} : If one node has more information than the rest, every node it going to follow it (at a delayed rate) $\Rightarrow$ \alert{Strong correlation in the nodes actions} \\ ~ \\
 
 
-\item \textbf{Further improvements} : When a node has multiple neighbors informed about in the same way, it may be smart to randomly follow one with a \alert{probability depending on its amount of information}. But then the behavior of the nodes is not determined by the structure of the graph... 
+\item \textbf{Further improvements} : When a node has multiple neighbors informed about in the same way, it may be smart to randomly follow one with a \alert{probability depending on its amount of information}. But then the behavior of the nodes is not determined by the structure of the graph...
 \end{itemize}
 \end{frame}
 
