@@ -105,23 +105,6 @@ Review the article \fullcite{DBLP:journals/corr/KollaJG16}
  \end{algorithmic}
 \end{frame}
 
-\begin{frame}{Conclusion}
-\begin{itemize}
-\item The reinforcement learning methods presented here are \alert{not problem-specific}\end{itemize}
-\end{frame}
-
-
-\begin{frame}{Thank you}
-\centering \Huge Any Questions ?
-\end{frame}
-
-\begin{frame}
-\AtNextBibliography{\tiny}
-\printbibliography
-\end{frame}
-
-
-
 
 \begin{frame}{Issue with the FYL policy}
 \begin{figure}
@@ -174,5 +157,25 @@ After first iteration, node 4 has the most information. It can pass it to nodes 
 \item \textbf{Further improvements} : When a node has multiple neighbors informed about in the same way, it may be smart to randomly follow one with a \alert{probability depending on its amount of information}. But then the behavior of the nodes is not determined by the structure of the graph... 
 \end{itemize}
 \end{frame}
+
+\begin{frame}{Conclusion}
+\begin{itemize}
+\item RL framework very useful to study to study a bandit problem on a graph...
+\item ... But the naive solution is not very efficient!
+\item For simple policies, interesting bounds can be computed
+\item More general types of graphs provide hints to build more robust strategies
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Thank you}
+\centering \Huge Any Questions ?
+\end{frame}
+
+\begin{frame}
+\AtNextBibliography{\tiny}
+\printbibliography
+\end{frame}
+
 
 \end{document}
