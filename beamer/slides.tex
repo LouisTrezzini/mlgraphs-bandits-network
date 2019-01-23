@@ -82,27 +82,33 @@ Review the article \fullcite{DBLP:journals/corr/KollaJG16}
 \end{frame}
 
 \begin{frame}{Upper-Confidence-Bound-Network (UCB-Network) policy}
-  \begin{algorithmic}
-     \STATE {Each user in $G$ follows UCB-user policy}
-     \STATE{\bfseries UCB-user policy for a user $v$:}
-     \STATE{~~\bfseries Initialization:} For $1 \leq t \leq K$
-     \STATE{~~~~- play arm $t$}
-     \STATE{~~\bfseries Loop:} For $K \leq t \leq n$
-     \STATE{~~~~ - $a^v(t+1) = \underset{j}{\operatorname{argmax}} \, \, \hat{\mu}_{m_j^v(t)} + \sqrt{\frac{2 \ln t}{m_j^v(t)}}$}
-  \end{algorithmic}
+  \begin{algorithm}[H]
+    \caption{Upper-Confidence-Bound-Network (UCB-Network)}
+    \begin{algorithmic}
+       \STATE {Each user in $G$ follows UCB-user policy}
+       \STATE{\bfseries UCB-user policy for a user $v$:}
+       \STATE{~~\bfseries Initialization:} For $1 \leq t \leq K$
+       \STATE{~~~~- play arm $t$}
+       \STATE{~~\bfseries Loop:} For $K \leq t \leq n$
+       \STATE{~~~~ - $a^v(t+1) = \underset{j}{\operatorname{argmax}} \, \, \hat{\mu}_{m_j^v(t)} + \sqrt{\frac{2 \ln t}{m_j^v(t)}}$}
+    \end{algorithmic}
+  \end{algorithm}
 \end{frame}
 
 \begin{frame}{Follow Your Leader (FYL) policy}
-  \begin{algorithmic}
-    \STATE {\bfseries Input:} Graph $G$, a dominating set $D$ and a dominating set partition
-    \STATE{\bfseries Leader - Each node in $D$:}
-    \STATE{Follows the UCB-user policy by using the samples of itself and its neighbors}
-    \STATE{\bfseries Follower - Each node in $V\setminus D$:}
-    \STATE{In round $t=1$:}
-    \STATE{~~~~- Chooses an action randomly from $\mathcal{K}$}
-    \STATE{In round $t > 1$:}
-    \STATE{~~~~-  Chooses the action taken by the leader in its component, in the previous round $(t-1)$}
- \end{algorithmic}
+  \begin{algorithm}[H]
+    \caption{Follow Your Leader (FYL) policy}
+    \begin{algorithmic}
+      \STATE {\bfseries Input:} Graph $G$, a dominating set $D$ and a dominating set partition
+      \STATE{\bfseries Leader - Each node in $D$:}
+      \STATE{Follows the UCB-user policy by using the samples of itself and its neighbors}
+      \STATE{\bfseries Follower - Each node in $V\setminus D$:}
+      \STATE{In round $t=1$:}
+      \STATE{~~- Chooses an action randomly from $\mathcal{K}$}
+      \STATE{In round $t > 1$:}
+      \STATE{~~-  Chooses the action taken by the leader in its component, in the previous round $(t-1)$}
+   \end{algorithmic}
+  \end{algorithm}
 \end{frame}
 
 
@@ -116,7 +122,7 @@ Nodes 41-49 are \alert{missing on a lot of information} !
 
 \begin{frame}{Follow Best Informed (FBI) policy}
 \begin{itemize}
-\item FYL policy is myopic 
+\item FYL policy is myopic
 \item In addition to their previous action, nodes can output the number of samples (information) they used to compute it
 \item Nodes can \alert{follow their best informed neighbor and use UCB-policy if they are better informed}
 \item Actually, the structure of a graph fully determines the behavior of the nodes (but not their precise actions obviously)
@@ -127,7 +133,7 @@ Nodes 41-49 are \alert{missing on a lot of information} !
 \begin{figure}
 \includegraphics[scale=0.18]{fcstars}
 \caption{\centering Fully connected stars graph}
-After first iteration, node 4 has the most information. It can pass it to nodes 0-3, who will then pass it to their children. 
+After first iteration, node 4 has the most information. It can pass it to nodes 0-3, who will then pass it to their children.
 \end{figure}
 \end{frame}
 
@@ -154,7 +160,7 @@ After first iteration, node 4 has the most information. It can pass it to nodes 
 \item \textbf{Downside} : If one node has more information than the rest, every node it going to follow it (at a delayed rate) $\Rightarrow$ \alert{Strong correlation in the nodes actions} \\ ~ \\
 
 
-\item \textbf{Further improvements} : When a node has multiple neighbors informed about in the same way, it may be smart to randomly follow one with a \alert{probability depending on its amount of information}. But then the behavior of the nodes is not determined by the structure of the graph... 
+\item \textbf{Further improvements} : When a node has multiple neighbors informed about in the same way, it may be smart to randomly follow one with a \alert{probability depending on its amount of information}. But then the behavior of the nodes is not determined by the structure of the graph...
 \end{itemize}
 \end{frame}
 
