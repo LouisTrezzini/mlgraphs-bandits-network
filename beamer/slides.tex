@@ -186,4 +186,59 @@ Study the reinforcement learning framework of 2 articles :
 \end{frame}
 
 
+\begin{frame}{Issue with the FYL policy}
+\begin{figure}
+\includegraphics[scale=0.25]{star-chain}
+\caption{Star-chain graph, with optimal dominating set in red}
+\end{figure}
+Nodes 41-49 are \alert{missing on a lot of information} !
+\end{frame}
+
+\begin{frame}{Follow Best Informed (FBI) policy}
+\begin{itemize}
+\item FYL policy is myopic 
+\item In addition to their previous action, nodes can output the number of samples (information) they used to compute it
+\item Nodes can \alert{follow their best informed neighbor and use UCB-policy if they are better informed}
+\item Actually, the structure of a graph fully determines the behavior of the nodes (but not their precise actions obviously)
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Example of the usefulness of the FBI policy}
+\begin{figure}
+\includegraphics[scale=0.18]{fcstars}
+\caption{\centering Fully connected stars graph}
+After first iteration, node 4 has the most information. It can pass it to nodes 0-3, who will then pass it to their children. 
+\end{figure}
+\end{frame}
+
+\begin{frame}{Results for a fully connected stars graph}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.49\linewidth]{fig4_1.png}
+  \includegraphics[width=0.49\linewidth]{fig4_2.png}
+  \caption{\centering Performance comparison of UCB-Network, FYL, and FBI policies on a 100-nodes star network and on the 100-nodes 5-FC-stars network: 2 arms, Bernoulli rewards with means $0.5$ and $0.7$ (1000 sample paths).}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Results star-chain graph}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.49\linewidth]{fig5_1.png}
+  \includegraphics[width=0.49\linewidth]{fig5_2.png}
+  \caption{\centering Performance comparison of FYL and FBI policies on the pathological graph structure (star graph with 70 nodes, among which a 20-nodes long chain): 2 arms, Bernoulli rewards with means $0.5$ and $0.7$ (1000 sample paths).}
+\end{figure}
+\end{frame}
+
+\begin{frame}{A deeper look at the FBI policy}
+\begin{itemize}
+\item \textbf{Downside} : If one node has more information than the rest, every node it going to follow it (at a delayed rate) $\Rightarrow$ \alert{Strong correlation in the nodes actions} \\ ~ \\
+
+
+\item \textbf{Further improvements} : When a node has multiple neighbors informed about in the same way, it may be smart to randomly follow one with a \alert{probability depending on its amount of information}. But then the behavior of the nodes is not determined by the structure of the graph... 
+\end{itemize}
+\end{frame}
+
+
+
+
 \end{document}
