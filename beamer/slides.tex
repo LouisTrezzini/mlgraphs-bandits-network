@@ -60,11 +60,12 @@
 \maketitle
 
 \begin{frame}{Goals of the project}
-Review the article \fullcite{DBLP:journals/corr/KollaJG16}
+Review the article \citetitle{DBLP:journals/corr/KollaJG16} (\citeauthor{DBLP:journals/corr/KollaJG16})
 
 \begin{itemize}
-  \item Understand the proposed framework and algorithms
-  \item Implement them and reproduce the experimental results
+  \item Understand the proposed framework and algorithms, along with their theoretical guarantees
+  \item Implement them in C++ to speed up and parallelize the computations
+  \item Reproduce the experimental results
   \item Pinpoint the limitations of the model and try to improve it
 \end{itemize}
 \end{frame}
@@ -73,10 +74,7 @@ Review the article \fullcite{DBLP:journals/corr/KollaJG16}
 \begin{itemize}
   \item Undirected graph $G = (V, E)$ with $|V| = m$ users
   \item All users are playing the \alert{same} MAB problem with $K$ arms
-  \item A user $v$ can observe the actions and the respective rewards of itself and its one hop neighbors up to round $t$, before deciding the action for round $(t+1)$
-  \item $\mathcal{N}(v)$: node $v$ and its one-hop neighbors
-  \item $m^v_i(t)$: number of times arm $i$ has been chosen by node $v$ and its one-hop neighbors up to round $t$
-  \item $\hat{\mu}_{m_i^v(t)}$: average reward for playing arm $i$ obtained by node $v$ and its one-hop neighbors up to round $t$
+  \item A user $v$ can observe the actions and the respective rewards of itself and its \alert{one-hop neighbors up to round $t$}, before deciding the action for round $t + 1$
 \end{itemize}
 
 \end{frame}
@@ -93,6 +91,11 @@ Review the article \fullcite{DBLP:journals/corr/KollaJG16}
        \STATE{~~~~ - $a^v(t+1) = \underset{j}{\operatorname{argmax}} \, \, \hat{\mu}_{m_j^v(t)} + \sqrt{\frac{2 \ln t}{m_j^v(t)}}$}
     \end{algorithmic}
   \end{algorithm}
+
+  \begin{itemize}
+    \item $m^v_i(t)$: number of times arm $i$ has been chosen by node $v$ and its one-hop neighbors up to round $t$
+    \item $\hat{\mu}_{m_i^v(t)}$: average reward for playing arm $i$ obtained by node $v$ and its one-hop neighbors up to round $t$
+  \end{itemize}
 \end{frame}
 
 \begin{frame}{Follow Your Leader (FYL) policy}
@@ -124,7 +127,7 @@ Nodes 41-49 are \alert{missing on a lot of information} !
 \begin{itemize}
 \item FYL policy is myopic
 \item In addition to their previous action, nodes can output the number of samples (information) they used to compute it
-\item Nodes can \alert{follow their best informed neighbor and use UCB-policy if they are better informed}
+\item Nodes can \alert{follow their best informed neighbor} and use UCB-policy if they are better informed
 \item Actually, the structure of a graph fully determines the behavior of the nodes (but not their precise actions obviously)
 \end{itemize}
 \end{frame}
@@ -157,17 +160,17 @@ After first iteration, node 4 has the most information. It can pass it to nodes 
 
 \begin{frame}{A deeper look at the FBI policy}
 \begin{itemize}
-\item \textbf{Downside} : If one node has more information than the rest, every node is going to follow it (at a delayed rate) $\Rightarrow$ \alert{Strong correlation in the nodes actions} \\ ~ \\
+\item \textbf{Downside:} If one node has more information than the rest, every node is going to follow it (at a delayed rate) $\Rightarrow$ \alert{Strong correlation in the nodes actions} \\ ~ \\
 
 
-\item \textbf{Further improvements} : When a node has multiple neighbors informed about in the same way, it may be smart to randomly follow one with a \alert{probability depending on its amount of information}. But then the behavior of the nodes is not determined by the structure of the graph...
+\item \textbf{Further improvements:} it may be smart to randomly follow one with a \alert{probability depending on its amount of information}. But then the behavior of the nodes is not determined by the structure of the graph...
 \end{itemize}
 \end{frame}
 
 \begin{frame}{Conclusion}
 \begin{itemize}
-\item RL framework very useful to study to study a bandit problem on a graph...
-\item ... But the naive solution is not very efficient!
+\item UCB-user policy is very useful to study a bandit problem on a graph...
+\item ... But the naive UCB-network policy is not very efficient!
 \item For simple policies, interesting bounds can be computed
 \item More general types of graphs provide hints to build more robust strategies
 \end{itemize}
